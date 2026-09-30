@@ -1,0 +1,2731 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0B0B14">
+<meta name="color-scheme" content="dark">
+<title>Gymtime · Relatório de Startup — Ray Consulting × Porto Digital</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;800;900&family=Noto+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   RAY × PORTO DIGITAL — RELATÓRIO INTERATIVO
+   Design System "Data Room" (v2) — shell escuro, cards elevados,
+   dados como primeiro cidadão. Mesmos nomes de classe da v1:
+   trocar este bloco troca a pele inteira sem tocar no conteúdo.
+   ============================================================ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+
+:root{
+  /* --- superfícies --- */
+  --bg:#0B0B14;
+  --surface:#14141F;
+  --surface-2:#1A1A28;
+  --surface-3:#23233A;
+  --line:rgba(255,255,255,0.075);
+  --line-mid:rgba(255,255,255,0.13);
+  --line-strong:rgba(255,255,255,0.22);
+
+  /* --- texto --- */
+  --text:#EFEDF7;
+  --text-mid:#A7A4BE;
+  --text-dim:#75728F;
+
+  /* --- acentos (versões on-dark da paleta Ray) --- */
+  --purple:#A972F0;
+  --purple-soft:#8E7BF0;
+  --purple-core:#7030A0;
+  --teal:#4ECFD9;
+  --blue:#6BA8CF;
+  --green:#3FD69A;
+  --amber:#F7B84B;
+  --red:#FF6E5C;
+  --white:#ffffff;
+  --ink:var(--text);
+  --gray-text:var(--text-mid);
+  --gray-muted:var(--text-dim);
+  --gray-mid:var(--line-mid);
+
+  /* --- washes translúcidos (substituem os tints sólidos da v1) --- */
+  --tint-purple:rgba(169,114,240,0.10);
+  --tint-teal:rgba(78,207,217,0.10);
+  --tint-cream:rgba(247,184,75,0.10);
+  --tint-amber:rgba(247,184,75,0.10);
+  --tint-green:rgba(63,214,154,0.11);
+  --tint-red:rgba(255,110,92,0.11);
+
+  --radius:14px;
+  --radius-sm:9px;
+  --shadow:0 1px 2px rgba(0,0,0,0.4), 0 8px 26px -12px rgba(0,0,0,0.6);
+  --shadow-lift:0 2px 4px rgba(0,0,0,0.4), 0 18px 44px -16px rgba(0,0,0,0.75);
+  --glow-purple:0 0 22px -6px rgba(169,114,240,0.55);
+  --font:'Lato','Noto Sans',sans-serif;
+  --ease:cubic-bezier(.22,.61,.36,1);
+  --header-h:112px;
+}
+
+html{ scroll-behavior:smooth; -webkit-text-size-adjust:100%; }
+body{
+  font-family:var(--font);
+  background:var(--bg);
+  color:var(--text-mid);
+  font-size:14.5px;
+  -webkit-font-smoothing:antialiased;
+  font-variant-numeric:tabular-nums;
+}
+/* brilho ambiente: dá profundidade ao fundo escuro sem custo de imagem */
+body::before{
+  content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+  background:
+    radial-gradient(900px 420px at 12% -8%, rgba(112,48,160,0.30), transparent 70%),
+    radial-gradient(760px 380px at 96% 2%, rgba(67,147,157,0.20), transparent 72%);
+}
+main, .app-header, .site-footer{ position:relative; z-index:1; }
+a{ color:inherit; }
+::selection{ background:rgba(169,114,240,0.32); color:#fff; }
+
+/* scrollbar discreta no tema escuro */
+*::-webkit-scrollbar{ width:10px; height:10px; }
+*::-webkit-scrollbar-track{ background:transparent; }
+*::-webkit-scrollbar-thumb{ background:rgba(255,255,255,0.13); border-radius:99px; border:2px solid transparent; background-clip:content-box; }
+*::-webkit-scrollbar-thumb:hover{ background:rgba(255,255,255,0.24); background-clip:content-box; }
+
+/* ============================================================
+   PRIMITIVAS DE CARD (a "cola" do data room)
+   ============================================================ */
+.card-base{
+  background:var(--surface-2); border:1px solid var(--line);
+  border-radius:var(--radius); box-shadow:var(--shadow);
+}
+/* tick de acento: 40px no topo-esquerdo, no lugar da barra full-width da v1 */
+.tick::before{
+  content:''; position:absolute; top:-1px; left:22px; width:42px; height:2px;
+  background:linear-gradient(90deg,var(--purple),var(--teal)); border-radius:0 0 2px 2px;
+}
+
+/* ============================================================
+   RODAPÉ DE FONTES / SIGLAS  (colapsável — ver JS)
+   ============================================================ */
+.slide-footer{
+  margin-top:26px; border-top:1px solid var(--line);
+  padding:0; display:block;
+}
+.sf-toggle{
+  display:flex; align-items:center; gap:9px; width:100%;
+  background:none; border:none; cursor:pointer; font-family:var(--font);
+  padding:12px 2px; color:var(--text-dim);
+  font-size:10.5px; font-weight:800; letter-spacing:1.6px; text-transform:uppercase;
+  transition:color .15s;
+}
+.sf-toggle:hover{ color:var(--teal); }
+.sf-toggle .chev{
+  display:inline-flex; align-items:center; justify-content:center;
+  width:16px; height:16px; border-radius:4px; border:1px solid var(--line-mid);
+  font-size:9px; line-height:1; transition:transform .2s var(--ease), border-color .15s;
+}
+.slide-footer.open .sf-toggle .chev{ transform:rotate(90deg); border-color:var(--teal); }
+.slide-footer.open .sf-toggle{ color:var(--teal); }
+.sf-body{
+  display:none; gap:40px; flex-wrap:wrap; justify-content:space-between;
+  align-items:flex-start; padding:2px 2px 16px;
+}
+.slide-footer.open .sf-body{ display:flex; animation:fadeUp .28s var(--ease); }
+.footer-src{ font-size:11.5px; font-weight:400; color:var(--text-dim); line-height:1.6; max-width:60%; }
+.footer-src strong{ color:var(--purple); font-weight:800; letter-spacing:0.3px; }
+.footer-sig{ font-size:11.5px; font-weight:400; color:var(--text-dim); text-align:right; line-height:1.6; max-width:38%; margin-left:auto; }
+.footer-sig strong{ color:var(--teal); font-weight:800; letter-spacing:0.3px; }
+@keyframes fadeUp{ from{ opacity:0; transform:translateY(-4px); } to{ opacity:1; transform:none; } }
+
+/* ============================================================
+   TOOLTIP DE SIGLAS (glossário auto-extraído — ver JS)
+   ============================================================ */
+.sigla{
+  border-bottom:1px dotted rgba(78,207,217,0.42);
+  cursor:help; position:relative; color:inherit;
+  transition:border-color .15s, color .15s;
+}
+.sigla:hover{ border-bottom-color:var(--teal); color:var(--teal); }
+.sigla-tip{
+  position:fixed; z-index:200; max-width:280px;
+  background:var(--surface-3); color:var(--text);
+  border:1px solid var(--line-mid); border-radius:var(--radius-sm);
+  padding:10px 13px; font-size:12.5px; line-height:1.5; font-weight:400;
+  box-shadow:var(--shadow-lift); pointer-events:none;
+  opacity:0; transform:translateY(4px); transition:opacity .14s, transform .14s;
+}
+.sigla-tip.on{ opacity:1; transform:none; }
+.sigla-tip b{ color:var(--teal); font-weight:800; display:block; margin-bottom:3px; font-size:11px; letter-spacing:0.8px; text-transform:uppercase; }
+
+/* ============================================================
+   BANNER
+   ============================================================ */
+.banner{
+  position:relative; overflow:hidden;
+  background:linear-gradient(135deg, rgba(112,48,160,0.30), rgba(67,147,157,0.18));
+  border:1px solid var(--line-mid); border-left:3px solid var(--purple);
+  color:var(--text); padding:22px 28px; border-radius:var(--radius);
+  font-size:15px; line-height:1.7;
+}
+.banner strong{ font-weight:800; color:#fff; }
+
+/* ============================================================
+   PERFIS (3 cards)
+   ============================================================ */
+.profile-row{ display:flex; gap:18px; flex-wrap:wrap; }
+.profile-card{
+  position:relative; flex:1; min-width:220px; padding:22px 24px;
+  background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius);
+  box-shadow:var(--shadow); transition:transform .2s var(--ease), border-color .2s, box-shadow .2s;
+}
+.profile-card::before{
+  content:''; position:absolute; top:-1px; left:22px; width:42px; height:2px;
+  background:var(--teal); border-radius:0 0 2px 2px;
+}
+.profile-card.p::before{ background:var(--purple); }
+.profile-card:hover{ transform:translateY(-3px); border-color:var(--line-mid); box-shadow:var(--shadow-lift); }
+.profile-card h5{ font-size:15px; font-weight:800; color:var(--teal); margin-bottom:10px; line-height:1.35; }
+.profile-card.p h5{ color:var(--purple); }
+.profile-card p{ font-size:13.5px; color:var(--text-mid); line-height:1.65; }
+
+/* ============================================================
+   SPLIT (bullets + nota lateral)
+   ============================================================ */
+.split-row{ display:flex; gap:30px; flex-wrap:wrap; }
+.split-left{ flex:1.15; min-width:280px; }
+.split-left .stitle{ font-size:10.5px; font-weight:800; letter-spacing:1.8px; text-transform:uppercase; color:var(--text-dim); margin-bottom:16px; }
+.bullet-item{ font-size:14.5px; color:var(--text-mid); line-height:1.7; padding-left:22px; margin-bottom:15px; position:relative; }
+.bullet-item::before{
+  content:''; position:absolute; left:2px; top:9px; width:6px; height:6px; border-radius:50%;
+  background:var(--purple); box-shadow:0 0 0 3px rgba(169,114,240,0.16);
+}
+.bullet-item strong{ color:var(--text); font-weight:700; }
+
+.note-box{
+  flex:0.85; min-width:260px; align-self:flex-start;
+  background:var(--surface-2); border:1px solid var(--line);
+  border-left:3px solid var(--amber); border-radius:var(--radius);
+  padding:20px 24px; box-shadow:var(--shadow);
+}
+.note-box.teal{ border-left-color:var(--teal); }
+.note-box .ntitle{
+  display:flex; align-items:center; gap:8px;
+  font-size:10.5px; font-weight:800; letter-spacing:1.6px; text-transform:uppercase;
+  color:var(--amber); margin-bottom:12px;
+}
+.note-box .ntitle::before{ content:''; width:5px; height:5px; border-radius:50%; background:currentColor; flex-shrink:0; }
+.note-box.teal .ntitle{ color:var(--teal); }
+.note-box p{ font-size:13.8px; color:var(--text-mid); line-height:1.7; margin-bottom:10px; }
+.note-box p:last-child{ margin-bottom:0; }
+.note-box p strong{ color:var(--text); font-weight:700; }
+
+/* ============================================================
+   ESTADO DO NEGÓCIO (checklist + riscos)
+   ============================================================ */
+.estado-row{ display:flex; gap:34px; flex-wrap:wrap; }
+.estado-col{ flex:1; min-width:280px; }
+.estado-col > .col-title{ font-size:11px; font-weight:800; letter-spacing:1.6px; text-transform:uppercase; color:var(--text-dim); margin-bottom:16px; }
+.check-row{
+  display:flex; gap:13px; align-items:flex-start; padding:13px 16px;
+  border-radius:var(--radius-sm); margin-bottom:8px;
+  background:var(--surface-2); border:1px solid var(--line); border-left:3px solid var(--line-mid);
+  transition:border-color .18s, transform .18s var(--ease);
+}
+.check-row:hover{ transform:translateX(2px); }
+.check-row.ok{ border-left-color:var(--green); background:linear-gradient(90deg,var(--tint-green),transparent 55%), var(--surface-2); }
+.check-row.warn{ border-left-color:var(--amber); background:linear-gradient(90deg,var(--tint-amber),transparent 55%), var(--surface-2); }
+.check-row.no{ border-left-color:var(--red); background:linear-gradient(90deg,var(--tint-red),transparent 55%), var(--surface-2); }
+.check-ic{ font-size:14px; font-weight:900; width:16px; flex-shrink:0; padding-top:1px; }
+.check-row.ok .check-ic{ color:var(--green); }
+.check-row.warn .check-ic{ color:var(--amber); }
+.check-row.no .check-ic{ color:var(--red); }
+.check-txt{ font-size:13.6px; color:var(--text-mid); line-height:1.62; }
+.check-txt strong{ color:var(--text); font-weight:700; }
+
+.risk-row{ display:flex; gap:14px; align-items:flex-start; padding:13px 0; border-bottom:1px solid var(--line); }
+.risk-row:last-child{ border-bottom:none; }
+.risk-badge{
+  font-size:9.5px; font-weight:800; letter-spacing:0.8px; text-transform:uppercase;
+  padding:5px 8px; border-radius:5px; flex-shrink:0; width:56px; text-align:center; height:fit-content;
+  border:1px solid currentColor; background:rgba(255,255,255,0.03);
+}
+.risk-badge.alto{ color:var(--red); background:var(--tint-red); }
+.risk-badge.medio{ color:var(--amber); background:var(--tint-amber); }
+.risk-badge.baixo{ color:var(--teal); background:var(--tint-teal); }
+.risk-txt{ font-size:13.6px; color:var(--text-mid); line-height:1.62; }
+.risk-txt strong{ color:var(--text); font-weight:700; }
+
+/* ============================================================
+   KPI TILES — o coração do data room
+   ============================================================ */
+.kpi-row{ display:flex; gap:14px; flex-wrap:wrap; }
+.kpi-card{
+  position:relative; flex:1; min-width:180px; padding:18px 20px 17px;
+  background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius);
+  box-shadow:var(--shadow); overflow:hidden;
+  transition:transform .2s var(--ease), border-color .2s, box-shadow .2s;
+}
+.kpi-card::after{
+  content:''; position:absolute; inset:0; pointer-events:none;
+  background:radial-gradient(280px 120px at 100% 0%, rgba(169,114,240,0.14), transparent 70%);
+  opacity:0; transition:opacity .25s;
+}
+.kpi-card:hover{ transform:translateY(-3px); border-color:var(--line-mid); box-shadow:var(--shadow-lift); }
+.kpi-card:hover::after{ opacity:1; }
+.kpi-card::before{
+  content:''; position:absolute; left:0; top:14px; bottom:14px; width:2px;
+  background:var(--purple); border-radius:0 2px 2px 0;
+}
+.kpi-card.teal::before{ background:var(--teal); }
+.kpi-card.blue::before{ background:var(--blue); }
+.kpi-card.soft::before{ background:var(--purple-soft); }
+.kpi-num{
+  font-size:29px; font-weight:800; color:var(--text); line-height:1.08; margin-bottom:8px;
+  letter-spacing:-0.5px; font-variant-numeric:tabular-nums;
+}
+.kpi-card.teal .kpi-num{ color:#fff; }
+.kpi-desc{ font-size:12.8px; color:var(--text-dim); line-height:1.55; }
+
+/* ============================================================
+   TEXTO
+   ============================================================ */
+.body-text{ font-size:15px; font-weight:400; color:var(--text-mid); line-height:1.78; max-width:76ch; }
+.body-text strong{ color:var(--text); font-weight:700; }
+.body-text.lead{
+  font-size:16.5px; color:var(--text); line-height:1.72;
+  padding-left:18px; border-left:2px solid rgba(169,114,240,0.45);
+}
+.body-text.lead strong{ color:#fff; }
+
+/* ============================================================
+   TABELA DE DADOS
+   ============================================================ */
+.table-scroll{
+  overflow-x:auto; border:1px solid var(--line); border-radius:var(--radius);
+  background:var(--surface-2); box-shadow:var(--shadow);
+}
+.data-table{ width:100%; border-collapse:collapse; font-size:13.5px; min-width:560px; }
+.data-table thead tr{ background:var(--surface-3); }
+.data-table thead th{
+  color:var(--text-dim); font-weight:800; padding:12px 16px; text-align:left;
+  font-size:10px; text-transform:uppercase; letter-spacing:1.2px;
+  border-bottom:1px solid var(--line-mid); white-space:nowrap;
+}
+.data-table tbody tr{ transition:background .15s; }
+.data-table tbody tr:nth-child(even){ background:rgba(255,255,255,0.018); }
+.data-table tbody tr:hover{ background:rgba(169,114,240,0.075); }
+.data-table tbody td{
+  padding:12px 16px; color:var(--text-mid); line-height:1.6;
+  border-bottom:1px solid var(--line); vertical-align:top;
+}
+.data-table tbody tr:last-child td{ border-bottom:none; }
+.data-table tbody td strong{ color:var(--text); font-weight:700; }
+.data-table .hl td{ color:var(--purple); font-weight:700; background:rgba(169,114,240,0.09); }
+.data-table .neg{ color:var(--red); font-weight:700; }
+.data-table.dense{ font-size:12.5px; }
+.data-table.dense thead th{ padding:10px 13px; font-size:9.5px; }
+.data-table.dense tbody td{ padding:9px 13px; line-height:1.55; }
+.stars{ color:var(--purple); letter-spacing:2px; font-size:13px; white-space:nowrap; }
+.stars .off{ color:rgba(255,255,255,0.30); }
+
+/* ============================================================
+   GRÁFICOS — barras reais, animadas na entrada em tela
+   ============================================================ */
+.barchart-panel{
+  display:flex; flex-direction:column; gap:15px;
+  background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius);
+  padding:22px 24px; box-shadow:var(--shadow);
+}
+.barchart-title{
+  font-size:10.5px; font-weight:800; letter-spacing:1.8px; text-transform:uppercase;
+  color:var(--text-dim); margin-bottom:4px;
+}
+.bar-item{ display:flex; flex-direction:column; gap:7px; }
+.bar-item .bl-top{ display:flex; justify-content:space-between; gap:12px; font-size:13.2px; font-weight:700; color:var(--text); }
+.bar-item .bl-top span:last-child{ font-weight:800; color:var(--teal); white-space:nowrap; font-variant-numeric:tabular-nums; }
+.bar-track{ width:100%; height:8px; background:rgba(255,255,255,0.065); border-radius:99px; overflow:hidden; }
+.bar-fill{
+  height:100%; border-radius:99px;
+  background:linear-gradient(90deg,var(--purple-core),var(--purple) 45%,var(--teal));
+  box-shadow:0 0 14px -3px rgba(169,114,240,0.7);
+  width:0; transition:width 1.05s var(--ease);
+}
+.bar-fill.muted{ background:rgba(255,255,255,0.19); box-shadow:none; }
+.bar-fill.c2{ background:linear-gradient(90deg,var(--purple),var(--teal)); }
+.bar-item .bl-sub{ font-size:11.5px; color:var(--text-dim); line-height:1.5; }
+.barchart-note{ font-size:11.5px; color:var(--text-dim); margin-top:4px; line-height:1.55; }
+
+.range-track{ position:relative; width:100%; height:8px; background:rgba(255,255,255,0.065); border-radius:99px; }
+.range-fill{
+  position:absolute; top:0; bottom:0; border-radius:99px;
+  background:linear-gradient(90deg,var(--purple),var(--teal));
+  box-shadow:0 0 14px -3px rgba(78,207,217,0.7);
+  transition:width 1.05s var(--ease), left .8s var(--ease);
+}
+.range-point{ position:absolute; top:-5px; width:2px; height:18px; background:#fff; border-radius:2px; box-shadow:0 0 8px rgba(255,255,255,0.5); }
+
+/* ============================================================
+   DUAS COLUNAS
+   ============================================================ */
+.two-col{ display:flex; gap:18px; flex-wrap:wrap; }
+.col{
+  position:relative; flex:1; min-width:260px; padding:24px 26px;
+  background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius);
+  box-shadow:var(--shadow);
+}
+.col::before{ content:''; position:absolute; top:-1px; left:24px; width:42px; height:2px; background:var(--purple); border-radius:0 0 2px 2px; }
+.col.teal::before{ background:var(--teal); }
+.col-header{ font-size:15.5px; font-weight:800; color:var(--text); margin-bottom:4px; }
+.col.teal .col-header{ color:var(--text); }
+.col-body{ margin-top:14px; display:flex; flex-direction:column; }
+.col-item{ font-size:13.8px; color:var(--text-mid); line-height:1.68; margin-bottom:13px; }
+.col-item:last-child{ margin-bottom:0; }
+.col-item strong{ color:var(--text); font-weight:700; }
+
+/* ============================================================
+   GRID DE CARDS
+   ============================================================ */
+.gap-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:16px; min-width:0; }
+.gap-grid > *{ min-width:0; }
+.gap-grid.cols2{ grid-template-columns:repeat(2,1fr); }
+@media (max-width:820px){ .gap-grid, .gap-grid.cols2{ grid-template-columns:1fr 1fr; } }
+@media (max-width:560px){ .gap-grid, .gap-grid.cols2{ grid-template-columns:1fr; } }
+.gap-card{
+  position:relative; padding:20px 22px;
+  background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius);
+  box-shadow:var(--shadow); transition:transform .2s var(--ease), border-color .2s, box-shadow .2s;
+}
+.gap-card::before{ content:''; position:absolute; top:-1px; left:22px; width:42px; height:2px; background:var(--purple); border-radius:0 0 2px 2px; }
+.gap-card.teal-top::before{ background:var(--teal); }
+.gap-card:hover{ transform:translateY(-3px); border-color:var(--line-mid); box-shadow:var(--shadow-lift); }
+.gap-card h5{ font-size:14.8px; font-weight:800; color:var(--text); margin-bottom:9px; line-height:1.4; }
+.gap-card p{ font-size:13px; color:var(--text-mid); line-height:1.65; }
+.gap-card p strong{ color:var(--text); }
+.gap-card.highlight{
+  background:linear-gradient(135deg, rgba(112,48,160,0.42), rgba(67,147,157,0.28)), var(--surface-2);
+  border-color:rgba(169,114,240,0.45); box-shadow:var(--shadow), var(--glow-purple);
+}
+.gap-card.highlight::before{ background:linear-gradient(90deg,var(--purple),var(--teal)); width:60px; }
+.gap-card.highlight h5{ color:#fff; font-size:16.5px; }
+.gap-card.highlight p{ color:rgba(255,255,255,0.88); }
+
+/* ============================================================
+   LISTA DE VALIDAÇÃO
+   ============================================================ */
+.valid-row{
+  display:flex; gap:13px; align-items:flex-start; padding:15px 18px; margin-bottom:10px;
+  border-radius:var(--radius-sm); background:var(--surface-2);
+  border:1px solid var(--line); border-left:3px solid var(--line-mid);
+  transition:transform .18s var(--ease), border-color .18s;
+}
+.valid-row:hover{ transform:translateX(2px); border-color:var(--line-mid); }
+.valid-row.yes{ border-left-color:var(--green); background:linear-gradient(90deg,var(--tint-green),transparent 55%), var(--surface-2); }
+.valid-row.partial{ border-left-color:var(--amber); background:linear-gradient(90deg,var(--tint-amber),transparent 55%), var(--surface-2); }
+.valid-ic{ font-size:14px; font-weight:900; width:18px; flex-shrink:0; padding-top:1px; }
+.valid-row.yes .valid-ic{ color:var(--green); }
+.valid-row.partial .valid-ic{ color:var(--amber); }
+.valid-txt strong{ display:block; font-size:14.2px; color:var(--text); margin-bottom:4px; font-weight:800; }
+.valid-txt p{ font-size:13.5px; color:var(--text-mid); line-height:1.62; }
+
+.section-label{ font-size:10.5px; font-weight:800; color:var(--text-dim); text-transform:uppercase; letter-spacing:1.8px; }
+
+/* ============================================================
+   TAG DE FONTE
+   ============================================================ */
+.src-tag{
+  display:inline-flex; align-items:center; gap:6px; width:fit-content;
+  font-size:10px; font-weight:800; letter-spacing:0.8px; text-transform:uppercase;
+  color:var(--purple); background:var(--tint-purple);
+  border:1px solid rgba(169,114,240,0.28); border-radius:99px; padding:4px 11px; margin-top:9px;
+}
+.src-tag::before{ content:''; width:4px; height:4px; border-radius:50%; background:currentColor; }
+.src-tag.teal{ color:var(--teal); background:var(--tint-teal); border-color:rgba(78,207,217,0.28); }
+.src-tag.unverified{ color:var(--amber); background:var(--tint-amber); border-color:rgba(247,184,75,0.3); }
+
+/* ============================================================
+   ROADMAP / FASES
+   ============================================================ */
+.phase-track{ display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+@media (max-width:820px){ .phase-track{ grid-template-columns:1fr; } }
+.phase-card{
+  position:relative; padding:22px 24px; background:var(--surface-2);
+  border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow);
+  transition:transform .2s var(--ease), border-color .2s;
+}
+.phase-card:hover{ transform:translateY(-3px); border-color:var(--line-mid); }
+.phase-card::before{ content:''; position:absolute; top:-1px; left:24px; width:42px; height:2px; background:var(--purple); border-radius:0 0 2px 2px; }
+.phase-card.teal::before{ background:var(--teal); }
+.phase-num{ font-size:25px; font-weight:800; color:var(--purple); line-height:1; letter-spacing:-1px; }
+.phase-card.teal .phase-num{ color:var(--teal); }
+.phase-when{ font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:1.4px; color:var(--text-dim); margin:7px 0 13px; }
+.phase-card p{ font-size:13px; color:var(--text-mid); line-height:1.65; margin-bottom:9px; }
+.phase-strategy{ font-size:12px; color:var(--purple); font-weight:700; border-top:1px solid var(--line); padding-top:11px; margin-top:12px; line-height:1.5; }
+.phase-card.teal .phase-strategy{ color:var(--teal); }
+
+/* ============================================================
+   FUNIS
+   ============================================================ */
+.funnel-track{ display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+@media (max-width:820px){ .funnel-track{ grid-template-columns:1fr; } }
+.funnel-card{
+  position:relative; padding:22px 24px; background:var(--surface-2);
+  border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow);
+}
+.funnel-card::before{ content:''; position:absolute; top:-1px; left:24px; width:42px; height:2px; background:var(--purple); border-radius:0 0 2px 2px; }
+.funnel-card.teal::before{ background:var(--teal); }
+.funnel-card.amber::before{ background:var(--amber); }
+.funnel-card h5{ font-size:14.5px; font-weight:800; color:var(--text); margin-bottom:3px; }
+.funnel-card .stars{ display:block; margin-bottom:14px; }
+.funnel-card.teal .stars{ color:var(--teal); }
+.funnel-card.amber .stars{ color:var(--amber); }
+.step-row{ display:flex; align-items:flex-start; gap:11px; margin-bottom:12px; }
+.step-num{
+  display:flex; align-items:center; justify-content:center; width:20px; height:20px;
+  border-radius:6px; background:var(--tint-purple); color:var(--purple);
+  border:1px solid rgba(169,114,240,0.35);
+  font-size:10.5px; font-weight:800; flex-shrink:0; margin-top:1px;
+}
+.funnel-card.teal .step-num{ background:var(--tint-teal); color:var(--teal); border-color:rgba(78,207,217,0.35); }
+.funnel-card.amber .step-num{ background:var(--tint-amber); color:var(--amber); border-color:rgba(247,184,75,0.35); }
+.step-txt{ font-size:12.8px; color:var(--text-mid); line-height:1.6; }
+.step-txt strong{ color:var(--text); }
+
+/* ============================================================
+   CITAÇÃO
+   ============================================================ */
+.quote-block{
+  position:relative; padding:26px 30px 26px 34px; border-radius:var(--radius);
+  background:linear-gradient(135deg, rgba(169,114,240,0.10), transparent 60%), var(--surface-2);
+  border:1px solid var(--line); border-left:2px solid var(--purple);
+}
+.quote-block.teal{ border-left-color:var(--teal); background:linear-gradient(135deg, rgba(78,207,217,0.10), transparent 60%), var(--surface-2); }
+.quote-block .qmark{ font-size:40px; color:rgba(169,114,240,0.45); font-weight:900; line-height:0.5; display:block; margin-bottom:10px; font-family:Georgia,serif; }
+.quote-block.teal .qmark{ color:rgba(78,207,217,0.45); }
+.quote-block p{ font-size:16px; font-style:italic; color:var(--text); line-height:1.7; margin-bottom:13px; }
+.quote-block .qcite{ font-size:10.5px; font-weight:800; letter-spacing:1.6px; text-transform:uppercase; color:var(--purple); }
+.quote-block.teal .qcite{ color:var(--teal); }
+
+/* ============================================================
+   FICHA — metabar + grid
+   ============================================================ */
+.ficha-metabar{
+  display:flex; flex-wrap:wrap; gap:1px; overflow:hidden;
+  background:var(--line); border:1px solid var(--line); border-radius:var(--radius);
+}
+.ficha-metaitem{
+  flex:1; min-width:150px; padding:15px 18px; background:var(--surface-2);
+  border-left:none; margin:0; position:relative;
+}
+.ficha-metaitem::before{ content:''; position:absolute; left:0; top:16px; bottom:16px; width:2px; background:var(--purple); }
+.ficha-metaitem:nth-child(even)::before{ background:var(--teal); }
+.ficha-metaitem + .ficha-metaitem{ margin-left:0; }
+.ficha-metaitem .mlabel{ font-size:9.5px; font-weight:800; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-dim); margin-bottom:7px; }
+.ficha-metaitem .mvalue{ font-size:14px; font-weight:800; color:var(--text); line-height:1.4; }
+
+.ficha-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:22px 26px; }
+@media (max-width:820px){ .ficha-grid{ grid-template-columns:1fr; } }
+.ficha-col-top{ border-top:1px solid var(--line); padding:18px 4px 4px 0; position:relative; }
+.ficha-col-top::before{ content:''; position:absolute; top:-1px; left:0; width:42px; height:2px; background:var(--purple); }
+.ficha-col-top.teal::before{ background:var(--teal); }
+.ficha-cell h4{ font-size:11.5px; font-weight:800; color:var(--text); margin-bottom:13px; text-transform:uppercase; letter-spacing:1.7px; }
+.ficha-cell.teal-label h4{ color:var(--text); }
+.ficha-cell p{ font-size:13.6px; font-weight:400; color:var(--text-mid); line-height:1.75; }
+.ficha-cell p strong{ color:var(--text); font-weight:700; }
+.ficha-cell.gradient{
+  background:linear-gradient(135deg, rgba(112,48,160,0.45), rgba(67,147,157,0.30)), var(--surface-2);
+  border:1px solid rgba(169,114,240,0.35); box-shadow:var(--shadow), var(--glow-purple);
+  color:#fff; padding:24px 26px; display:flex; flex-direction:column; justify-content:center; border-radius:var(--radius);
+}
+.ficha-cell.gradient h4{ color:rgba(255,255,255,0.75); font-size:11px; }
+.ficha-cell.gradient p{ color:rgba(255,255,255,0.9); font-size:13.6px; }
+.ficha-cell.gradient p strong{ color:#fff; }
+
+/* ============================================================
+   MATRIZ 2x2
+   ============================================================ */
+.matrix-wrap{ display:grid; grid-template-columns:30px 1fr; gap:12px; }
+.matrix-yaxis{ display:flex; flex-direction:column; justify-content:space-between; align-items:center; padding:8px 0; }
+.matrix-yaxis span{ writing-mode:vertical-rl; transform:rotate(180deg); font-size:9.5px; font-weight:800; letter-spacing:1.4px; color:var(--text-dim); text-transform:uppercase; }
+.matrix-main{ display:flex; flex-direction:column; gap:10px; }
+.matrix-xaxis{ display:flex; justify-content:space-between; font-size:9.5px; font-weight:800; letter-spacing:1.4px; color:var(--text-dim); text-transform:uppercase; padding:0 4px; }
+.matrix-grid2{ display:grid; grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr; gap:12px; }
+@media (max-width:700px){ .matrix-grid2{ grid-template-columns:1fr; } }
+.matrix-cell{
+  background:var(--surface-2); border:1px solid var(--line); padding:20px 22px;
+  border-radius:var(--radius); min-height:120px; box-shadow:var(--shadow);
+  transition:transform .2s var(--ease), border-color .2s;
+}
+.matrix-cell:hover{ transform:translateY(-2px); border-color:var(--line-mid); }
+.matrix-cell.highlight{
+  background:linear-gradient(135deg, rgba(112,48,160,0.42), rgba(67,147,157,0.26)), var(--surface-2);
+  border-color:rgba(169,114,240,0.45); box-shadow:var(--shadow), var(--glow-purple);
+}
+.matrix-cell h5{ font-size:14.5px; font-weight:800; color:var(--text); margin-bottom:8px; }
+.matrix-cell.highlight h5{ color:#fff; }
+.matrix-cell p{ font-size:13px; color:var(--text-mid); line-height:1.62; }
+.matrix-cell.highlight p{ color:rgba(255,255,255,0.88); }
+
+/* ============================================================
+   APP SHELL — cabeçalho e navegação
+   ============================================================ */
+.app-header{
+  position:sticky; top:0; z-index:60;
+  background:rgba(11,11,20,0.78); backdrop-filter:blur(16px) saturate(140%);
+  -webkit-backdrop-filter:blur(16px) saturate(140%);
+  border-bottom:1px solid var(--line);
+  transition:box-shadow .2s, background .2s;
+}
+.app-header.compact{ box-shadow:0 10px 30px -12px rgba(0,0,0,0.9); background:rgba(11,11,20,0.92); }
+/* barra de progresso de leitura do bloco atual */
+.app-header::after{
+  content:''; position:absolute; left:0; bottom:-1px; height:2px; width:var(--read,0%);
+  background:linear-gradient(90deg,var(--purple),var(--teal));
+  box-shadow:0 0 10px -2px rgba(169,114,240,0.9); transition:width .12s linear;
+}
+.app-header-top{ display:flex; align-items:center; justify-content:space-between; height:62px; padding:0 36px; max-width:1320px; margin:0 auto; transition:height .2s ease; }
+.app-header.compact .app-header-top{ height:46px; }
+.brand{ display:flex; align-items:center; gap:14px; cursor:pointer; }
+.ray-badge{
+  width:34px; height:34px; border-radius:9px;
+  background:linear-gradient(135deg,var(--teal),var(--purple));
+  display:flex; align-items:center; justify-content:center; color:#fff;
+  font-weight:800; font-size:10px; letter-spacing:0.5px; flex-shrink:0;
+  box-shadow:var(--glow-purple);
+  transition:width .2s ease, height .2s ease, font-size .2s ease;
+}
+.app-header.compact .ray-badge{ width:26px; height:26px; font-size:8px; border-radius:7px; }
+.brand-names{ display:flex; align-items:center; gap:12px; font-weight:800; font-size:12px; letter-spacing:1.6px; color:var(--text); }
+.brand-names .div{ width:1px; height:18px; background:var(--line-mid); }
+.brand-names .porto{ color:var(--text-mid); font-weight:800; }
+.app-header.compact .brand-names{ font-size:11px; }
+.report-tag{ font-size:11px; font-weight:700; color:var(--text-dim); letter-spacing:0.4px; transition:opacity .2s ease, font-size .2s ease; }
+.report-tag strong{ color:var(--text); }
+.app-header.compact .report-tag{ font-size:10.5px; opacity:0.8; }
+
+.main-nav{
+  display:flex; gap:4px; height:46px; align-items:center; overflow-x:auto;
+  padding:0 36px 8px; max-width:1320px; margin:0 auto;
+  transition:height .2s ease, padding .2s ease; scrollbar-width:none;
+}
+.main-nav::-webkit-scrollbar{ display:none; }
+.app-header.compact .main-nav{ height:38px; padding-bottom:6px; }
+.main-nav button{
+  display:flex; align-items:center; gap:8px; height:32px;
+  background:transparent; border:1px solid transparent; border-radius:99px;
+  color:var(--text-dim); font-family:var(--font); font-weight:800; font-size:12px;
+  letter-spacing:0.3px; padding:0 15px; cursor:pointer; white-space:nowrap;
+  transition:color .15s, background .15s, border-color .15s;
+}
+.app-header.compact .main-nav button{ font-size:11.5px; height:29px; padding:0 13px; }
+.main-nav button:hover{ color:var(--text); background:rgba(255,255,255,0.05); }
+.main-nav button.active{
+  color:#fff; background:rgba(169,114,240,0.16);
+  border-color:rgba(169,114,240,0.42); box-shadow:0 0 18px -8px rgba(169,114,240,0.9);
+}
+.main-nav button .n{
+  font-size:9.5px; font-weight:900; letter-spacing:0.5px;
+  color:var(--text-dim); background:rgba(255,255,255,0.06);
+  border-radius:4px; padding:2px 5px; transition:color .15s, background .15s;
+}
+.main-nav button.active .n{ color:var(--teal); background:rgba(78,207,217,0.14); }
+
+.view{ display:none; }
+.view.active{ display:block; }
+
+/* micro-tópicos em sequência de scroll; a lateral é atalho + scrollspy */
+.panel{ display:block; scroll-margin-top:24px; padding-top:44px; margin-top:8px; border-top:1px solid var(--line); }
+.panel:first-child{ padding-top:0; margin-top:0; border-top:none; }
+
+/* ============================================================
+   LAYOUT COM RAIL LATERAL
+   ============================================================ */
+.bloco-layout{ max-width:1320px; margin:0 auto; padding:0 36px; display:flex; align-items:flex-start; gap:40px; }
+.bloco-sidebar{
+  width:238px; flex-shrink:0; position:sticky; top:calc(var(--header-h) + 18px);
+  max-height:calc(100vh - var(--header-h) - 36px); overflow-y:auto; padding:30px 0;
+}
+.bloco-sidebar .sub-nav-inner{ display:flex; flex-direction:column; gap:2px; position:relative; padding-left:1px; border-left:1px solid var(--line); }
+.bloco-sidebar .sub-nav-inner button{
+  text-align:left; background:none; border:none; border-left:2px solid transparent;
+  padding:10px 10px 10px 16px; margin-left:-2px; font-family:var(--font);
+  font-size:12.4px; font-weight:700; color:var(--text-dim); cursor:pointer;
+  border-radius:0 var(--radius-sm) var(--radius-sm) 0; transition:all .16s; line-height:1.45;
+}
+.bloco-sidebar .sub-nav-inner button:hover{ color:var(--text); background:rgba(255,255,255,0.04); }
+.bloco-sidebar .sub-nav-inner button.active{
+  color:#fff; background:linear-gradient(90deg, rgba(169,114,240,0.16), transparent);
+  border-left-color:var(--purple);
+}
+.bloco-sidebar .sub-nav-inner button.done{ color:var(--text-mid); }
+
+.content-wrap{ flex:1; min-width:0; margin:0; padding:36px 0 48px; }
+.panel-head{ margin-bottom:26px; }
+.panel-tag{
+  display:inline-flex; align-items:center; gap:8px;
+  font-size:10px; font-weight:800; letter-spacing:1.8px; text-transform:uppercase;
+  color:var(--teal); margin-bottom:12px;
+}
+.panel-tag::before{ content:''; width:16px; height:1px; background:currentColor; }
+.panel-title{ font-size:28px; font-weight:800; color:var(--text); line-height:1.22; letter-spacing:-0.6px; }
+.block-parts{ display:flex; flex-direction:column; gap:34px; }
+.part{ display:flex; flex-direction:column; gap:20px; }
+.part-title{ font-size:11px; font-weight:800; color:var(--text-dim); text-transform:uppercase; letter-spacing:1.8px; }
+.sub-block-divider{ border-top:1px solid var(--line); margin:10px 0 2px; padding-top:30px; }
+
+/* ============================================================
+   ABERTURA DE BLOCO
+   ============================================================ */
+.bloco-chapter{
+  position:relative; overflow:hidden;
+  background:linear-gradient(180deg, var(--surface), var(--bg));
+  border-bottom:1px solid var(--line);
+}
+.bloco-chapter::before{
+  content:''; position:absolute; inset:0;
+  background-image:linear-gradient(rgba(255,255,255,0.028) 1px, transparent 1px),
+                   linear-gradient(90deg, rgba(255,255,255,0.028) 1px, transparent 1px);
+  background-size:44px 44px; mask-image:linear-gradient(180deg,#000,transparent 85%);
+  -webkit-mask-image:linear-gradient(180deg,#000,transparent 85%);
+}
+.bloco-chapter-inner{ max-width:1320px; margin:0 auto; padding:46px 36px 38px; position:relative; z-index:1; }
+.bloco-chapter .chapter-tag{
+  display:inline-flex; align-items:center; gap:9px;
+  font-size:10.5px; font-weight:800; letter-spacing:2px; text-transform:uppercase;
+  color:var(--teal); margin-bottom:16px;
+}
+.bloco-chapter .chapter-tag::before{ content:''; width:22px; height:1px; background:currentColor; }
+.bloco-chapter .chapter-title{ font-size:40px; font-weight:800; color:#fff; margin-bottom:18px; letter-spacing:-1.2px; line-height:1.08; }
+.bloco-chapter .chapter-rule{ width:56px; height:2px; background:linear-gradient(90deg,var(--purple),var(--teal)); margin-bottom:20px; border-radius:2px; }
+.bloco-chapter .chapter-desc{ font-size:15.5px; font-weight:400; color:var(--text-mid); line-height:1.75; max-width:66ch; }
+.chapter-ghost-num{
+  position:absolute; right:20px; top:50%; transform:translateY(-50%);
+  font-size:210px; font-weight:900; line-height:1; z-index:0; user-select:none;
+  color:transparent; -webkit-text-stroke:1px rgba(169,114,240,0.20);
+  letter-spacing:-8px;
+}
+
+/* ============================================================
+   HOME
+   ============================================================ */
+.hero{ display:flex; gap:0; background:var(--surface); position:relative; overflow:hidden; border-bottom:1px solid var(--line); }
+.hero-left{ flex:1 1 50%; min-width:320px; display:flex; flex-direction:column; justify-content:center; padding:64px 44px 64px 56px; position:relative; z-index:2; }
+.hero-left-bar{ position:absolute; left:0; top:0; bottom:0; width:2px; background:linear-gradient(180deg,var(--purple),var(--teal)); }
+.hero-eyebrow{
+  display:inline-flex; align-items:center; gap:9px; width:fit-content;
+  font-size:10.5px; font-weight:800; letter-spacing:2.2px; text-transform:uppercase;
+  color:var(--teal); margin-bottom:20px;
+  border:1px solid rgba(78,207,217,0.3); background:var(--tint-teal);
+  padding:6px 13px; border-radius:99px;
+}
+.hero-title{
+  display:inline-block; width:fit-content;
+  font-size:64px; font-weight:900; line-height:1; margin-bottom:18px; letter-spacing:-2.5px;
+  background:linear-gradient(120deg,#fff 30%, var(--purple) 75%, var(--teal));
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+}
+.hero-sub{ font-size:17px; font-weight:800; color:var(--text); margin-bottom:10px; letter-spacing:-0.2px; }
+.hero-rule{ width:48px; height:2px; background:var(--teal); margin-bottom:18px; border-radius:2px; }
+.hero-desc{ font-size:15px; color:var(--text-mid); max-width:48ch; line-height:1.75; margin-bottom:36px; }
+.hero-logos{ display:flex; align-items:center; gap:16px; margin-bottom:14px; }
+.hero-logos .div{ width:1px; height:26px; background:var(--line-mid); }
+.hero-logos .porto{ font-weight:800; color:var(--text-mid); font-size:12px; letter-spacing:1.6px; }
+.hero-credit{ font-size:10.5px; font-weight:800; color:var(--text-dim); letter-spacing:1.4px; }
+.hero-right{ flex:1 1 50%; min-width:280px; position:relative; }
+.hero-right img{ width:100%; height:100%; object-fit:cover; display:block; min-height:380px; filter:saturate(0.75) brightness(0.62) contrast(1.05); }
+/* a imagem entra no fundo escuro em vez de brigar com ele */
+.hero-right::after{
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(90deg, var(--surface) 0%, rgba(20,20,31,0.72) 26%, rgba(20,20,31,0.32) 65%, rgba(11,11,20,0.55) 100%),
+             radial-gradient(600px 300px at 80% 20%, rgba(112,48,160,0.28), transparent 70%);
+}
+
+/* faixa de KPIs da home */
+.stats-band{ background:var(--surface); border-bottom:1px solid var(--line); padding:38px 0 42px; }
+.stats-band-inner{ max-width:1320px; margin:0 auto; padding:0 36px; }
+.stats-band-lead{
+  font-size:15.5px; line-height:1.8; margin-bottom:30px; max-width:88ch; color:var(--text-mid);
+  padding-left:18px; border-left:2px solid rgba(169,114,240,0.45);
+}
+.stats-band-lead strong{ font-weight:800; color:var(--text); }
+.stats-band .kpi-row{ gap:14px; }
+.stats-band .kpi-num{ color:#fff; font-size:27px; }
+.stats-band .kpi-desc{ color:var(--text-dim); }
+
+.home-summary{ max-width:1320px; margin:0 auto; padding:52px 36px 20px; }
+.home-summary-tag{
+  display:inline-flex; align-items:center; gap:9px;
+  font-size:10px; font-weight:800; letter-spacing:1.8px; text-transform:uppercase;
+  color:var(--teal); margin-bottom:12px;
+}
+.home-summary-tag::before{ content:''; width:16px; height:1px; background:currentColor; }
+.home-summary h2{ font-size:26px; font-weight:800; color:var(--text); margin-bottom:28px; letter-spacing:-0.6px; }
+.summary-grid2{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+@media (max-width:720px){ .summary-grid2{ grid-template-columns:1fr; } }
+.summary-card{
+  position:relative; overflow:hidden;
+  background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius);
+  padding:26px 30px; display:flex; flex-direction:column; gap:10px; text-align:left;
+  cursor:pointer; font-family:var(--font); box-shadow:var(--shadow);
+  transition:transform .2s var(--ease), box-shadow .2s, border-color .2s;
+}
+.summary-card::before{ content:''; position:absolute; top:-1px; left:30px; width:42px; height:2px; background:var(--purple); border-radius:0 0 2px 2px; }
+.summary-card.teal::before{ background:var(--teal); }
+.summary-card::after{
+  content:'→'; position:absolute; right:26px; top:26px; font-size:17px; color:var(--purple);
+  opacity:0; transform:translateX(-6px); transition:opacity .2s, transform .2s var(--ease);
+}
+.summary-card.teal::after{ color:var(--teal); }
+.summary-card:hover{ transform:translateY(-4px); border-color:var(--line-mid); box-shadow:var(--shadow-lift); }
+.summary-card:hover::after{ opacity:1; transform:none; }
+.summary-card .snum{ font-size:11px; font-weight:800; color:var(--text-dim); letter-spacing:2px; }
+.summary-card h3{ font-size:18px; font-weight:800; color:var(--text); letter-spacing:-0.3px; }
+.summary-card p{ font-size:13.8px; font-weight:400; color:var(--text-mid); line-height:1.68; padding-right:20px; }
+
+.site-footer{
+  background:#08080F; border-top:1px solid var(--line);
+  color:var(--text-dim); padding:38px 36px; text-align:center; font-size:12px; margin-top:48px;
+}
+.site-footer strong{ color:var(--text); }
+.site-footer .fname{ font-size:13px; font-weight:800; color:var(--text); letter-spacing:0.3px; }
+.site-footer .frole{ color:var(--teal); font-weight:700; }
+.site-footer .femail{ margin-top:6px; display:inline-block; color:var(--teal); font-weight:800; text-decoration:none; font-size:12.5px; }
+.site-footer .femail:hover{ text-decoration:underline; }
+.site-footer .fbrand{ margin-top:20px; padding-top:20px; border-top:1px solid var(--line); }
+
+/* ============================================================
+   FAB DE EXPORTAÇÃO
+   ============================================================ */
+.print-fab{
+  position:fixed; right:24px; bottom:24px; width:46px; height:46px; border-radius:13px;
+  background:var(--surface-3); color:var(--text); border:1px solid var(--line-mid);
+  box-shadow:var(--shadow-lift); cursor:pointer; z-index:80;
+  display:flex; align-items:center; justify-content:center; font-size:17px;
+  transition:transform .18s var(--ease), border-color .18s, color .18s;
+}
+.print-fab:hover{ transform:translateY(-2px); border-color:var(--purple); color:#fff; }
+
+/* ============================================================
+   ENTRADA EM TELA (revelação suave dos blocos)
+   ============================================================ */
+.reveal{ opacity:0; transform:translateY(14px); }
+.reveal.in{ opacity:1; transform:none; transition:opacity .55s var(--ease), transform .55s var(--ease); }
+@media (prefers-reduced-motion:reduce){
+  *{ animation:none !important; transition:none !important; }
+  .reveal{ opacity:1; transform:none; }
+  html{ scroll-behavior:auto; }
+}
+
+/* ============================================================
+   IMPRESSÃO — inverte o tema para papel (troca só os tokens)
+   ============================================================ */
+@media print{
+  :root{
+    --bg:#ffffff; --surface:#ffffff; --surface-2:#ffffff; --surface-3:#F4F2F8;
+    --line:#E4E1EA; --line-mid:#D6D2E0; --line-strong:#BDB8CC;
+    --text:#1A1A2E; --text-mid:#43434F; --text-dim:#77778A;
+    --purple:#7030A0; --purple-soft:#67449F; --teal:#2E7A84;
+    --green:#1F8A5C; --amber:#A9701C; --red:#A32E18;
+    --tint-purple:#F6F2FA; --tint-teal:#EFF6F6; --tint-amber:#FCF2E2;
+    --tint-cream:#FBF3E7; --tint-green:#EAF6F1; --tint-red:#FBEAEA;
+    --shadow:none; --shadow-lift:none; --glow-purple:none;
+  }
+  body{ background:#fff; color:#43434F; }
+  body::before, .app-header::after, .bloco-chapter::before, .hero-right::after{ display:none !important; }
+  .app-header, .bloco-sidebar, .print-fab{ display:none !important; }
+  .view{ display:block !important; }
+  .panel{ display:block !important; page-break-before:always; border-top:none; }
+  .bloco-chapter{ page-break-before:always; background:#fff; }
+  .bloco-layout{ display:block !important; padding:0 28px !important; }
+  .slide-footer .sf-body{ display:flex !important; }
+  .sf-toggle{ display:none !important; }
+  .reveal{ opacity:1 !important; transform:none !important; }
+  .bar-fill, .range-fill{ box-shadow:none !important; }
+  .hero-title{ color:#7030A0 !important; -webkit-text-fill-color:#7030A0; }
+  .hero-right img{ filter:none; }
+  .chapter-ghost-num{ -webkit-text-stroke:1px #EFE8F7; }
+  .card-base, .gap-card, .kpi-card, .col, .phase-card, .funnel-card, .matrix-cell,
+  .profile-card, .note-box, .barchart-panel, .summary-card, .table-scroll{ box-shadow:none !important; }
+  /* texto que no tema escuro é branco precisa virar tinta no papel */
+  .banner strong, .body-text.lead strong,
+  .kpi-card.teal .kpi-num, .stats-band .kpi-num,
+  .gap-card.highlight h5, .matrix-cell.highlight h5,
+  .ficha-cell.gradient p strong{ color:#1A1A2E !important; }
+  .bloco-chapter .chapter-title{ color:#7030A0 !important; }
+  .gap-card.highlight p, .matrix-cell.highlight p,
+  .ficha-cell.gradient p{ color:#43434F !important; }
+  .ficha-cell.gradient h4{ color:#7030A0 !important; }
+  .gap-card.highlight, .matrix-cell.highlight, .ficha-cell.gradient{
+    background:#F6F2FA !important; border-color:#D9CBEA !important;
+  }
+  .banner{ background:#F6F2FA !important; color:#43434F !important; border-color:#D9CBEA !important; }
+  .range-point{ background:#1A1A2E !important; box-shadow:none !important; }
+  .bar-track, .range-track{ background:#E4E1EA !important; }
+  .data-table thead tr{ background:#7030A0 !important; }
+  .data-table thead th{ color:#fff !important; border-bottom:none !important; }
+  .sigla{ border-bottom:none !important; }
+  /* o rodapé do site é escuro na tela; no papel volta a ser branco */
+  .site-footer{ background:#fff !important; color:#43434F !important; border-top:1px solid #E4E1EA !important; }
+  .site-footer .fname, .site-footer strong{ color:#1A1A2E !important; }
+  .site-footer .femail, .site-footer .frole{ color:#7030A0 !important; }
+  .stars .off{ color:#D6D2E0 !important; }
+  .check-row, .valid-row{ break-inside:avoid; }
+  .gap-card, .kpi-card, .phase-card, .funnel-card, .matrix-cell, .profile-card, .barchart-panel{ break-inside:avoid; }
+}
+
+/* ============================================================
+   RESPONSIVO
+   ============================================================ */
+@media (max-width:900px){
+  .bloco-layout{ flex-direction:column; gap:0; padding:0 18px; align-items:stretch; }
+  .bloco-sidebar{
+    position:sticky; top:var(--header-h); width:100%; max-height:none;
+    background:rgba(11,11,20,0.92); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+    z-index:45; padding:11px 0; border-bottom:1px solid var(--line);
+  }
+  .bloco-sidebar .sub-nav-inner{ flex-direction:row; overflow-x:auto; gap:7px; padding-bottom:2px; border-left:none; padding-left:0; scrollbar-width:none; }
+  .bloco-sidebar .sub-nav-inner::-webkit-scrollbar{ display:none; }
+  .bloco-sidebar .sub-nav-inner button{
+    white-space:nowrap; border-left:none; margin-left:0; border-radius:99px;
+    background:rgba(255,255,255,0.05); border:1px solid var(--line); color:var(--text-mid); padding:8px 14px;
+  }
+  .bloco-sidebar .sub-nav-inner button.active{
+    background:rgba(169,114,240,0.18); border-color:rgba(169,114,240,0.45); color:#fff;
+  }
+  .content-wrap{ padding:24px 0 34px; min-width:0; }
+  .bloco-chapter-inner{ padding:34px 18px 28px; }
+  .chapter-ghost-num{ font-size:130px; right:0; opacity:0.7; }
+  .two-col, .split-row, .estado-row, .profile-row{ flex-wrap:wrap; }
+  .two-col .col, .split-row .split-left, .split-row .note-box, .estado-row .estado-col, .profile-row .profile-card{ min-width:100% !important; }
+  .bar-item .bl-top{ flex-wrap:wrap; row-gap:2px; }
+  .bar-item .bl-top span:last-child{ white-space:normal; text-align:right; }
+  .sf-body{ gap:18px; }
+  .footer-src, .footer-sig{ max-width:100%; text-align:left; margin-left:0; }
+}
+@media (max-width:640px){
+  .hero{ flex-direction:column; }
+  .hero-left{ padding:44px 22px 40px 26px; }
+  .hero-title{ font-size:42px; letter-spacing:-1.6px; }
+  .app-header-top{ padding:0 18px; }
+  .main-nav{ padding-left:18px; padding-right:18px; }
+  .content-wrap, .home-summary, .stats-band-inner{ padding-left:18px; padding-right:18px; }
+  .home-summary{ padding-top:40px; }
+  .bloco-chapter .chapter-title{ font-size:30px; }
+  .panel-title{ font-size:23px; }
+  .ficha-metaitem{ min-width:100%; }
+}
+
+</style>
+<body>
+
+<header class="app-header">
+  <div class="app-header-top">
+    <div class="brand" onclick="goHome()">
+      <div class="ray-badge">RAY</div>
+      <div class="brand-names"><span class="porto">Programa de Pré-Aceleração</span></div>
+    </div>
+    <div class="report-tag"><strong>Gymtime</strong> · Relatório de Startup · Julho 2026</div>
+  </div>
+  <nav class="main-nav" id="mainNav">
+    <button class="active" data-view="home" onclick="showView('home')"><span class="n">•</span>Início</button>
+    <button data-view="b0" onclick="showView('b0')"><span class="n">00</span>Diagnóstico Inicial</button>
+    <button data-view="b1" onclick="showView('b1')"><span class="n">01</span>Discovery</button>
+    <button data-view="b2" onclick="showView('b2')"><span class="n">02</span>Market Fit</button>
+    <button data-view="b3" onclick="showView('b3')"><span class="n">03</span>Go-to-Market</button>
+  </nav>
+</header>
+
+<main>
+
+<section class="view active" id="view-home">
+  <div class="hero">
+    <div class="hero-left">
+      <div class="hero-left-bar"></div>
+      <div class="hero-eyebrow">Programa de Pré-Aceleração</div>
+      <div class="hero-title">Gymtime</div>
+      <div class="hero-sub">Relatório de Startup</div>
+      <div class="hero-rule"></div>
+      <p class="hero-desc">Infraestrutura digital do mercado fitness: gestão, pagamentos e consumo sob demanda, com inteligência de mercado para validação, tração comercial e captação.</p>
+      <div class="hero-logos">
+        <div class="ray-badge">RAY</div>
+        <div class="div"></div>
+        <div class="porto">Porto Digital</div>
+      </div>
+      <div class="hero-credit">RAY CONSULTING × PORTO DIGITAL · JULHO DE 2026</div>
+    </div>
+    <div class="hero-right"></div>
+  </div>
+
+  <div class="stats-band">
+    <div class="stats-band-inner">
+      <p class="stats-band-lead">"Nenhum concorrente une gestão, pagamentos e marketplace de demanda numa única stack vertical para academias PME · é o espaço em branco que a Gymtime ocupa no mercado."</p>
+      <div class="kpi-row">
+        <div class="kpi-card"><div class="kpi-num">R$ 17 bi</div><div class="kpi-desc">Faturamento anual do setor fitness brasileiro (Seção 1.1)</div></div>
+        <div class="kpi-card teal"><div class="kpi-num">R$ 212–397 mi</div><div class="kpi-desc">SOM · mercado obtível em Sudeste + Nordeste (Seção 2.4)</div></div>
+        <div class="kpi-card"><div class="kpi-num">116</div><div class="kpi-desc">Academias na base atual de clientes B2B (Seção 3.4)</div></div>
+        <div class="kpi-card blue"><div class="kpi-num">R$ 2,32 mi</div><div class="kpi-desc">TPV mensal processado pelo GymPay em jan/26 (Seção 0.1)</div></div>
+        <div class="kpi-card soft"><div class="kpi-num">R$ 293 mil</div><div class="kpi-desc">ARR atual, a partir de MRR de R$ 24,4 mil (Seção 0.1)</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="home-summary">
+    <div class="home-summary-tag">Estrutura do Relatório</div>
+    <h2>Sumário</h2>
+    <div class="summary-grid2">
+      <button class="summary-card" onclick="showView('b0')">
+        <div class="snum">00</div>
+        <h3>Diagnóstico Inicial</h3>
+        <p>Ficha da startup, estado do negócio, riscos identificados e escopo do programa a partir do kickoff (jul/2026) e do questionário de Inteligência de Mercado.</p>
+      </button>
+      <button class="summary-card teal" onclick="showView('b1')">
+        <div class="snum">01</div>
+        <h3>Discovery</h3>
+        <p>Panorama do setor fitness, dores documentadas, estrutura de mercado e regulatório, validação da hipótese de problema e segmentação inicial.</p>
+      </button>
+      <button class="summary-card" onclick="showView('b2')">
+        <div class="snum">02</div>
+        <h3>Market Fit</h3>
+        <p>Dimensionamento independente (TAM/SAM/SOM), perfis de ICP, canais de aquisição, benchmark de concorrência, posicionamento e precificação.</p>
+      </button>
+      <button class="summary-card teal" onclick="showView('b3')">
+        <div class="snum">03</div>
+        <h3>Go-to-Market</h3>
+        <p>Estratégia de entrada, jornada de proposta de valor, funis de vendas, matriz produto × mercado e preparação para a rodada de captação.</p>
+      </button>
+    </div>
+    <p style="font-size:11.5px;color:var(--text-dim);line-height:1.6;margin-top:28px;">Siglas: TAM = Total Addressable Market · SAM = Serviceable Available Market · SOM = Serviceable Obtainable Market · ICP = Ideal Customer Profile · B2B2C = Business to Business to Consumer · SaaS = Software as a Service · BaaS = Banking as a Service.</p>
+  </div>
+</section>
+<!-- ============================================================ BLOCO 00 — DIAGNÓSTICO INICIAL ============================================================ -->
+<section class="view" id="view-b0">
+  <div class="bloco-chapter">
+    <div class="chapter-ghost-num">00</div>
+    <div class="bloco-chapter-inner">
+      <div class="chapter-tag">Seção 0</div>
+      <div class="chapter-title">Diagnóstico Inicial</div>
+      <div class="chapter-rule"></div>
+      <p class="chapter-desc">O ponto de partida do programa: consolidar quem é a Gymtime hoje, seu estado real de negócio, os riscos e o escopo de trabalho definido no kickoff (jul/2026) e no questionário de Inteligência de Mercado.</p>
+    </div>
+  </div>
+  <div class="bloco-layout">
+    <aside class="bloco-sidebar">
+    <div class="sub-nav-inner" data-group="b0">
+      <button class="active" onclick="showPanel('b0','b0-p1')">0.1 Ficha e Respostas ao Questionário</button>
+      <button onclick="showPanel('b0','b0-p2')">0.1 ICP e Concorrência</button>
+      <button onclick="showPanel('b0','b0-p3')">0.2 Estado do Negócio e Riscos</button>
+    </div>
+    </aside>
+  <div class="content-wrap" id="b0-panels">
+
+    <!-- ===== 0.1 Ficha e Respostas ao Questionário ===== -->
+    <div class="panel" id="b0-p1" data-group="b0">
+      <div class="panel-head">
+        <div class="panel-tag">Seção 0 · 0.1 Ficha e Respostas ao Questionário</div>
+        <div class="panel-title">Diagnóstico Inicial da Startup</div>
+      </div>
+      <div class="block-parts">
+        <div class="part">
+          <div class="ficha-metabar">
+            <div class="ficha-metaitem"><div class="mlabel">Startup</div><div class="mvalue">Gymtime</div></div>
+            <div class="ficha-metaitem"><div class="mlabel">Setor</div><div class="mvalue">Fitness-tech</div></div>
+            <div class="ficha-metaitem"><div class="mlabel">Modelo</div><div class="mvalue">SaaS + Fintech + Marketplace</div></div>
+            <div class="ficha-metaitem"><div class="mlabel">Estágio</div><div class="mvalue">Operacional · pré-anjo</div></div>
+            <div class="ficha-metaitem"><div class="mlabel">Sede</div><div class="mvalue">Recife, PE</div></div>
+            <div class="ficha-metaitem"><div class="mlabel">Kickoff</div><div class="mvalue">Jul/2026 · IM</div></div>
+          </div>
+          <div class="ficha-grid" style="margin-top:8px;">
+            <div class="ficha-col-top">
+              <div class="ficha-cell">
+                <h4>Mercado</h4>
+                <p><strong>Problema:</strong> baixa eficiência operacional, alta inadimplência e churn nas academias, com base pouco monetizada.<br><br><strong>Oportunidade:</strong> setor de R$ 17 bi/ano, digitalização da gestão e migração do boleto para Pix/cartão.<br><br><strong>Foco:</strong> Brasil, com largada no Nordeste (base regional PE/NE).</p>
+              </div>
+            </div>
+            <div class="ficha-col-top teal">
+              <div class="ficha-cell teal-label">
+                <h4>Produto / Tecnologia</h4>
+                <p><strong>Proposta:</strong> ecossistema em três camadas: gestão (SaaS), pagamentos (GymPay) e consumo sob demanda (Gymtime Go).<br><br><strong>MVP:</strong> em produção há ~2 anos, com três produtos operacionais.<br><br><strong>Diferenciais:</strong> BaaS, gamificação e "Moeda da Saúde"; o app do aluno gera efeito de rede.</p>
+              </div>
+            </div>
+            <div class="ficha-col-top">
+              <div class="ficha-cell">
+                <h4>Receita</h4>
+                <p><strong>Fluxos:</strong> assinatura SaaS + taxas financeiras (GymPay) + comissão de marketplace (Go).<br><br><strong>Estágio:</strong> faturamento 2025 de R$ 260 mil (~2x 2024), MRR de R$ 24,4 mil (~R$ 293 mil de ARR).<br><br><strong>Tração:</strong> Gymtime Go com 10.543 usuários; TPV do GymPay de R$ 2,32 mi em jan/26.</p>
+              </div>
+            </div>
+            <div class="ficha-col-top">
+              <div class="ficha-cell">
+                <h4>Time</h4>
+                <p><strong>Liderança:</strong> Wladimilson Bernardino (CEO) e Carlos Eduardo Duarte (CTO); Timoteo Barros (Head Mobile).<br><br><strong>Tecnologia:</strong> em produção há ~2 anos, com três produtos já operacionais.<br><br><strong>Gap:</strong> estrutura comercial e de inteligência de mercado ainda incipientes.</p>
+              </div>
+            </div>
+            <div class="ficha-col-top teal">
+              <div class="ficha-cell teal-label">
+                <h4>Capital</h4>
+                <p><strong>Captação:</strong> rodada pré-anjo de R$ 500 mil por 10% (valuation ~R$ 5 mi), via mútuo conversível, 18 meses.<br><br><strong>Programas e deals:</strong> Porto Digital; parcerias com BB, Elgin e Polar.</p>
+              </div>
+            </div>
+            <div class="ficha-col-top">
+              <div class="ficha-cell gradient">
+                <h4>Síntese do diagnóstico</h4>
+                <p>Produto real em operação, com três camadas e tração inicial. O que falta é dimensionamento defensável, consistência de métricas e captação estruturada · o foco do programa.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <div class="footer-src"><strong>Fontes:</strong> Deck Gymtime (abr/2026); questionário de Inteligência de Mercado (jul/2026).</div>
+        <div class="footer-sig"><strong>Siglas:</strong> MVP = produto mínimo viável · SaaS = Software as a Service · BaaS = Banking as a Service · MRR = Monthly Recurring Revenue · ARR = Annual Recurring Revenue · TPV = volume transacionado.</div>
+      </div>
+    </div>
+
+    <!-- ===== 0.1 ICP e Concorrência ===== -->
+    <div class="panel" id="b0-p2" data-group="b0">
+      <div class="panel-head">
+        <div class="panel-tag">Seção 0 · 0.1 Ficha de Diagnóstico</div>
+        <div class="panel-title">ICP e Concorrência (percepção da fundação)</div>
+      </div>
+      <div class="block-parts">
+        <div class="part">
+          <p class="body-text lead">Modelo de três lados: a Gymtime endereça simultaneamente academias PME e estúdios (oferta B2B), o aluno consumidor (demanda B2C) e a camada de pagamentos que conecta os dois · cada lado alimenta o outro.</p>
+          <div class="profile-row">
+            <div class="profile-card">
+              <h5>Oferta B2B (academias/estúdios)</h5>
+              <p>Donos de academia PME e estúdios boutique compram SaaS + GymPay; dores de inadimplência, churn silencioso e ociosidade fora do pico não monetizada.</p>
+            </div>
+            <div class="profile-card p">
+              <h5>Demanda B2C (alunos)</h5>
+              <p>O aluno usa o Gymtime Go (pay-per-use, day-use, "Moeda da Saúde"). É o lado da demanda que cria o efeito de rede e valoriza o marketplace para as academias.</p>
+            </div>
+            <div class="profile-card">
+              <h5>Aspiracional (redes/franquias)</h5>
+              <p>Redes e franquias de maior porte, com alto volume de alunos. Vistas como expansão futura, não como motor de receita no curto prazo.</p>
+            </div>
+          </div>
+          <div class="note-box">
+            <div class="ntitle">Achado Ray · Concorrência Subdimensionada</div>
+            <p>A percepção de concorrência trata "gestão + cobrança integradas" como diferencial, mas isso já é padrão entre players consolidados: Pacto, Tecnofit e ABC EVO. Faltam ainda os adjacentes de pagamentos (Vindi, Asaas) e de wellness corporativo (Wellhub, TotalPass), incorporados neste benchmark.</p>
+          </div>
+          <div class="note-box teal" style="margin-top:16px;max-width:none;">
+            <div class="ntitle">Diferencial · GymPay é sistema próprio, não revendido</div>
+            <p>O cliente confirmou em reunião que o GymPay é tecnologia própria e customizável, com geração de receita própria, não terceirizada. Já Vindi e Asaas não operam pagamentos próprios: revendem infraestrutura de terceiros, inclusive para os concorrentes diretos da Gymtime (Pacto, Tecnofit, ABC EVO/W12, Next Fit), que usam essas duas plataformas como intermediárias de pagamento.</p>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <div class="footer-src"><strong>Fontes:</strong> Questionário de IM (jul/2026); deck Gymtime (abr/2026); reunião de apresentação com o cliente (set/2026); análise Ray Consulting.</div>
+        <div class="footer-sig"><strong>Siglas:</strong> ICP = perfil de cliente ideal · B2B = business to business · B2C = business to consumer · PME = pequena e média empresa.</div>
+      </div>
+    </div>
+
+    <!-- ===== 0.2 Estado do Negócio e Riscos ===== -->
+    <div class="panel" id="b0-p3" data-group="b0">
+      <div class="panel-head">
+        <div class="panel-tag">Seção 0 · 0.2 Estado do Negócio</div>
+        <div class="panel-title">Estágio do Negócio e Riscos Identificados</div>
+      </div>
+      <div class="block-parts">
+        <div class="part">
+          <div class="estado-row">
+            <div class="estado-col">
+              <div class="col-title">Estágio do negócio</div>
+              <div class="check-row ok"><div class="check-ic">✔</div><div class="check-txt"><strong>Tecnologia em produção</strong> há ~2 anos; três produtos operacionais.</div></div>
+              <div class="check-row ok"><div class="check-ic">✔</div><div class="check-txt"><strong>Tração inicial de receita e TPV</strong> (R$ 2,3 mi/mês gerido).</div></div>
+              <div class="check-row ok"><div class="check-ic">✔</div><div class="check-txt"><strong>Parcerias fortes</strong> · BB, Elgin, Polar.</div></div>
+              <div class="check-row warn"><div class="check-ic">⚠</div><div class="check-txt"><strong>ARR inicial</strong> (~R$ 293 mil) · base pequena para a ambição.</div></div>
+              <div class="check-row warn"><div class="check-ic">⚠</div><div class="check-txt"><strong>IM de concorrência básica/reativa</strong> (autodeclarado).</div></div>
+              <div class="check-row no"><div class="check-ic">✗</div><div class="check-txt"><strong>Dimensionamento inconsistente</strong> e ausência de BI.</div></div>
+            </div>
+            <div class="estado-col">
+              <div class="col-title">Riscos identificados</div>
+              <div class="risk-row"><div class="risk-badge alto">ALTO</div><div class="risk-txt">Concorrência consolidada e capitalizada · Pacto, Tecnofit e ABC EVO já entregam SaaS + pagamentos; "gestão + cobrança" já é padrão, não diferencial.</div></div>
+              <div class="risk-row"><div class="risk-badge alto">ALTO</div><div class="risk-txt">Dimensionamento inflado · o TAM do deck confunde wellness global com mercado endereçável; compromete credibilidade em diligência.</div></div>
+              <div class="risk-row"><div class="risk-badge alto">ALTO</div><div class="risk-txt">Margem de pagamentos sob pressão · o Pix Automático (sem MDR) tende a comprimir a receita de fintech que dependa de spread de cartão.</div></div>
+              <div class="risk-row"><div class="risk-badge alto">ALTO</div><div class="risk-txt">Perda do cliente principal e máquina comercial suspensa · a Gymtime perdeu recentemente seu principal cliente, o que arrastou outros clientes que o tinham como referência e derrubou a receita; a operação comercial foi suspensa para priorizar a recuperação do produto e hoje não há processo comercial ativo, apenas indicações levadas pelos próprios sócios (confirmado pelo cliente, set/2026).</div></div>
+              <div class="risk-row"><div class="risk-badge medio">MÉDIO</div><div class="risk-txt">Carga regulatória · BaaS e dados de saúde exigem compliance (Res. Conjunta 16/2025; Res. BCB 517/2025; LGPD) · pesado para 2 anos.</div></div>
+              <div class="risk-row"><div class="risk-badge medio">MÉDIO</div><div class="risk-txt">Adoção de tecnologia pelo público · setor pulverizado, gestor pouco profissionalizado; onboarding e educação custosos.</div></div>
+              <div class="risk-row"><div class="risk-badge medio">MÉDIO</div><div class="risk-txt">Complexidade do modelo tri-produto · servir academia (B2B), aluno (B2C) e parceiros exige foco; risco de dispersão pré-tração.</div></div>
+              <div class="risk-row"><div class="risk-badge baixo">BAIXO</div><div class="risk-txt">Concentração geográfica inicial · base regional (PE/NE); mitigável e, na largada, uma vantagem de foco.</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <div class="footer-src"><strong>Fontes:</strong> Diagnóstico Ray Consulting a partir do deck e questionário (2026); reunião de apresentação com o cliente (set/2026).</div>
+        <div class="footer-sig"><strong>Siglas:</strong> MVP = produto mínimo viável · MDR = taxa de desconto do lojista · BI = Business Intelligence.</div>
+      </div>
+    </div>
+
+  </div>
+  </div>
+</section>
+<!-- ============================================================ BLOCO 01 — DISCOVERY ============================================================ -->
+<section class="view" id="view-b1">
+  <div class="bloco-chapter">
+    <div class="chapter-ghost-num">01</div>
+    <div class="bloco-chapter-inner">
+      <div class="chapter-tag">Seção 1</div>
+      <div class="chapter-title">Discovery</div>
+      <div class="chapter-rule"></div>
+      <p class="chapter-desc">Organizar as evidências externas do setor fitness brasileiro: tamanho, dores documentadas, estrutura, regulação e segmentação, que confirmam ou refutam a hipótese de problema da Gymtime antes de avançar para dimensionamento e concorrência.</p>
+    </div>
+  </div>
+  <div class="bloco-layout">
+    <aside class="bloco-sidebar">
+    <div class="sub-nav-inner" data-group="b1">
+      <button class="active" onclick="showPanel('b1','b1-p1')">1.1 Panorama e Dimensão do Setor</button>
+      <button onclick="showPanel('b1','b1-p2')">1.2 Dores Documentadas</button>
+      <button onclick="showPanel('b1','b1-p3')">1.3 Estrutura de Mercado e Regulatório</button>
+      <button onclick="showPanel('b1','b1-p4')">1.4 Validação da Hipótese</button>
+      <button onclick="showPanel('b1','b1-p5')">1.4 Segmentação Inicial</button>
+    </div>
+    </aside>
+  <div class="content-wrap" id="b1-panels">
+
+    <!-- ===== 1.1 Panorama e Dimensão do Setor ===== -->
+    <div class="panel" id="b1-p1" data-group="b1">
+      <div class="panel-head">
+        <div class="panel-tag">Seção 1 · 1.1 Panorama e Dimensão do Setor</div>
+        <div class="panel-title">Panorama do Setor Fitness Brasileiro</div>
+      </div>
+      <div class="block-parts">
+        <div class="part">
+          <p class="body-text lead">O Brasil tem o 2º maior parque de academias do mundo e um setor de R$ 17 bi/ano em crescimento, mas com forte pulverização e informalidade. O dimensionamento específico da Gymtime (receita de provedores, não faturamento das academias) é tratado adiante.</p>
+          <div class="kpi-row">
+            <div class="kpi-card"><div class="kpi-num">R$ 17 bi</div><div class="kpi-desc">Faturamento do setor · Brasil (2024)</div></div>
+            <div class="kpi-card teal"><div class="kpi-num">~41 mil</div><div class="kpi-desc">Academias formais (até ~57 mil no universo amplo)</div></div>
+            <div class="kpi-card"><div class="kpi-num">~13-15 mi</div><div class="kpi-desc">Praticantes · penetração ~5-9%</div></div>
+            <div class="kpi-card blue"><div class="kpi-num">+44%</div><div class="kpi-desc">Crescimento do faturamento entre 2019 e 2024</div></div>
+          </div>
+          <div class="table-scroll">
+            <table class="data-table">
+              <thead><tr><th>Métrica</th><th>Valor</th><th>Observação</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Faturamento do setor fitness · Brasil (2024)</strong></td><td>R$ 17 bi/ano</td><td>De R$ 11,8 bi em 2019 (+44%) · é o setor total, não o TAM da Gymtime</td></tr>
+                <tr><td><strong>Nº de academias formais</strong></td><td>~41 mil</td><td>Até ~57 mil no universo amplo (2025); ~95% micro e pequenas</td></tr>
+                <tr><td><strong>Posição mundial</strong></td><td>2º - 4º</td><td>2º maior parque de academias do mundo; 4º em nº de alunos</td></tr>
+                <tr><td><strong>Praticantes</strong></td><td>~13-15 mi</td><td>Penetração ~5%-9% da população (vs. ~25% nos EUA)</td></tr>
+                <tr class="hl"><td><strong>Indústria fitness global</strong></td><td>~US$ 96 bi</td><td>Âncora de referência (IHRSA/HFA) · não a economia de wellness (US$ 6,8 tri, GWI, apenas contexto macro)</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <div class="footer-src"><strong>Fontes:</strong> ACAD Brasil / Panorama Setorial 2024; Sistema Pacto; IHRSA / HFA Global Report; Global Wellness Institute (2024).</div>
+        <div class="footer-sig"><strong>Siglas:</strong> CAGR = taxa de crescimento anual composta · GWI = Global Wellness Institute · HFA = Health & Fitness Association · bi = bilhões · mi = milhões.</div>
+      </div>
+    </div>
+
+    <!-- ===== 1.2 Dores Documentadas ===== -->
+    <div class="panel" id="b1-p2" data-group="b1">
+      <div class="panel-head">
+        <div class="panel-tag">Seção 1 · 1.2 Relatório de Dores e Lacunas</div>
+        <div class="panel-title">Dores Documentadas do Mercado Fitness</div>
+      </div>
+      <div class="block-parts">
+        <div class="part">
+          <p class="body-text lead">A dor central que a Gymtime afirma resolver · perda de receita por inadimplência, churn e ociosidade, somada a uma gestão pouco profissionalizada · é confirmada por dados setoriais de terceiros.</p>
+          <div class="two-col">
+            <div class="col">
+              <div class="col-header">Financeiro & retenção</div>
+              <div style="font-size:11px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:var(--text-dim);margin-top:2px;">Principal bolsão de perda de receita das academias</div>
+              <div class="col-body">
+                <div class="col-item"><strong>15%-25%</strong> de inadimplência na cobrança via boleto.</div>
+                <div class="col-item"><strong>20%-35%</strong> de churn involuntário (falha de pagamento, não intenção de sair).</div>
+                <div class="col-item"><strong>~25% EUA</strong> de penetração vs. ~5-9% no Brasil · espaço para reter e crescer base.</div>
+                <div class="col-item">A migração do boleto para Pix/cartão recorrente ataca diretamente o churn involuntário · é a tese do GymPay.</div>
+              </div>
+            </div>
+            <div class="col teal">
+              <div class="col-header">Operacional & gestão</div>
+              <div style="font-size:11px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:var(--text-dim);margin-top:2px;">Setor pulverizado e pouco digitalizado</div>
+              <div class="col-body">
+                <div class="col-item"><strong>~95%</strong> das academias são micro e pequenas empresas.</div>
+                <div class="col-item"><strong>~41 mil</strong> estabelecimentos formais, gestão muitas vezes centralizada no dono.</div>
+                <div class="col-item"><strong>Fora do pico:</strong> horários ociosos não monetizados · capacidade instalada ociosa.</div>
+                <div class="col-item">Sistemas desconectados e baixa inteligência de dados abrem espaço para uma plataforma única de gestão + pagamentos + demanda.</div>
+              </div>
+            </div>
+          </div>
+          <div class="gap-grid" style="margin-top:6px;">
+            <div class="gap-card">
+              <h5>Ressalva Metodológica</h5>
+              <p>As faixas de inadimplência e churn são estimativas setoriais (ACAD/Pacto), não um censo · direcionais, úteis para dimensionar a dor, mas a confirmar com dados dos próprios clientes.</p>
+            </div>
+            <div class="gap-card teal-top">
+              <h5>Contexto Adicional</h5>
+              <p>O setor vive um boom pós-pandemia (academias e alunos crescendo dois dígitos), o que aumenta a base de clientes potenciais para gestão e pagamentos.</p>
+            </div>
+            <div class="gap-card highlight">
+              <h5>Lacuna a Fechar</h5>
+              <p>Falta estudo que quantifique, em R$, a perda média por inadimplência/ociosidade por academia. Recomenda-se medir isso na base atual da Gymtime.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <div class="footer-src"><strong>Fontes:</strong> ACAD Brasil; Sistema Pacto (2026); estimativas setoriais.</div>
+        <div class="footer-sig"><strong>Siglas:</strong> MPE = micro e pequena empresa · MDR = taxa de desconto do lojista · Pix = pagamento instantâneo.</div>
+      </div>
+    </div>
+
+    <!-- ===== 1.3 Estrutura de Mercado e Regulatório ===== -->
+    <div class="panel" id="b1-p3" data-group="b1">
+      <div class="panel-head">
+        <div class="panel-tag">Seção 1 · 1.3 Estrutura de Mercado</div>
+        <div class="panel-title">Estrutura do Setor e Contexto Regulatório</div>
+      </div>
+      <div class="block-parts">
+        <div class="part">
+          <div class="split-row">
+            <div class="split-left">
+              <div class="stitle">Indicadores da Estrutura de Mercado</div>
+              <div class="table-scroll">
+                <table class="data-table dense">
+                  <thead><tr><th>Indicador</th><th>Valor</th></tr></thead>
+                  <tbody>
+                    <tr><td><strong>Academias formais (2025)</strong></td><td>~41 mil</td></tr>
+                    <tr><td><strong>Micro e pequenas empresas</strong></td><td>~95%</td></tr>
+                    <tr><td><strong>Faturamento do setor (2024)</strong></td><td>R$ 17 bi</td></tr>
+                    <tr><td><strong>Inadimplência (boleto)</strong></td><td>15%-25%</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <p class="body-text" style="margin-top:16px;">Setor pulverizado: ~95% das academias são MPE, muitas informais e com gestão centralizada no dono · público-alvo natural do SaaS + GymPay. Concentração geográfica: maior densidade no Sudeste; a Gymtime larga pelo Nordeste (vantagem de foco e proximidade). Baixa digitalização: sistemas desconectados e pouca inteligência de dados · barreira de adoção, mas também a oportunidade.</p>
+            </div>
+            <div class="note-box teal">
+              <div class="ntitle">Contexto Regulatório</div>
+              <p><strong>BaaS regulado</strong> (Res. Conjunta 16/2025): serviços bancários via parceiro passam a ser regulados; contratos até 31/12/2026. O GymPay precisa de provedor licenciado.</p>
+              <p><strong>Requisitos prudenciais</strong> (Res. Conjunta 14/2025 + Res. BCB 517/2025): capital mínimo e governança para arranjos de pagamento, com implementação progressiva até 2028.</p>
+              <p><strong>Pix Automático</strong> (Res. BCB 505/2025): cobrança recorrente barata que reduz inadimplência · oportunidade e pressão de margem (sem MDR) ao mesmo tempo.</p>
+              <p><strong>LGPD</strong> · dados sensíveis (Art. 11): frequência de treino e biometria de catraca são dados de saúde · exigem base legal, consentimento e DPA com fornecedores.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <div class="footer-src"><strong>Fontes:</strong> ACAD Brasil; Sebrae; Bacen (Res. BCB 505/2025 e 517/2025; Res. Conjunta 16/2025 e 14/2025); LGPD Art. 11.</div>
+        <div class="footer-sig"><strong>Siglas:</strong> MPE = micro e pequena empresa · BaaS = banking as a service · MDR = taxa de desconto do lojista · DPA = acordo de tratamento de dados.</div>
+      </div>
+    </div>
+
+    <!-- ===== 1.4 Validação da Hipótese ===== -->
+    <div class="panel" id="b1-p4" data-group="b1">
+      <div class="panel-head">
+        <div class="panel-tag">Seção 1 · 1.4 Validação da Hipótese</div>
+        <div class="panel-title">Validação da Hipótese de Problema</div>
+      </div>
+      <div class="block-parts">
+        <div class="part">
+          <p class="body-text lead">A hipótese central · "academias perdem receita por inadimplência, churn e ociosidade, e não existe uma plataforma única que una gestão, pagamentos e demanda" · é confirmada pelos dados, com uma ressalva sobre o grau de ineditismo.</p>
+          <div class="gap-grid cols2">
+            <div class="valid-row yes"><div class="valid-ic">✔</div><div class="valid-txt"><strong>Inadimplência e churn corroem a receita</strong><p>Confirmado: 15%-25% de inadimplência no boleto e 20%-35% de churn involuntário abrem espaço direto para o GymPay (Pix/cartão recorrente).</p></div></div>
+            <div class="valid-row yes"><div class="valid-ic">✔</div><div class="valid-txt"><strong>Mercado grande e em crescimento</strong><p>Confirmado: R$ 17 bi/ano (+44% em 2019-2024), 2º maior parque do mundo e boom pós-pandemia de academias e alunos.</p></div></div>
+            <div class="valid-row yes"><div class="valid-ic">✔</div><div class="valid-txt"><strong>Setor pulverizado e pouco digitalizado</strong><p>Confirmado: ~95% MPE, forte informalidade e gestão pouco profissionalizada · demanda por gestão integrada acessível.</p></div></div>
+            <div class="valid-row partial"><div class="valid-ic">≈</div><div class="valid-txt"><strong>Não há player unindo gestão + pagamentos + marketplace B2C</strong><p>Parcialmente: gestão + pagamentos já é padrão (Pacto, Tecnofit, ABC EVO); o inédito é a fusão com o marketplace de demanda (Go), ainda sem precedente validado por investidor no Brasil.</p></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <div class="footer-src"><strong>Fontes:</strong> ACAD Brasil; Sistema Pacto; IHRSA/HFA; análise Ray Consulting (2026).</div>
+        <div class="footer-sig"><strong>Siglas:</strong> B2C = business to consumer · MPE = micro e pequena empresa.</div>
+      </div>
+    </div>
+
+    <!-- ===== 1.4 Segmentação Inicial ===== -->
+    <div class="panel" id="b1-p5" data-group="b1">
+      <div class="panel-head">
+        <div class="panel-tag">Seção 1 · 1.4 Segmentação Inicial</div>
+        <div class="panel-title">Segmentação Inicial do Mercado</div>
+      </div>
+      <div class="block-parts">
+        <div class="part">
+          <p class="body-text lead">Quatro eixos aplicados aos três lados do modelo (oferta, demanda e pagamentos): porte, geografia, comportamento e canal.</p>
+          <div class="table-scroll">
+            <table class="data-table">
+              <thead><tr><th>Dimensão</th><th>Segmento prioritário (Fase 1)</th><th>Segmento secundário (Fase 2)</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Oferta (academias)</strong></td><td>Academias PME de 1-3 unidades, 200-800 alunos</td><td>Redes e franquias de maior porte (3-8+ unidades)</td></tr>
+                <tr><td><strong>Demanda (alunos)</strong></td><td>Aluno flexível que resiste ao plano fixo (day-use)</td><td>Benefício corporativo / wellness das empresas</td></tr>
+                <tr><td><strong>Geografia</strong></td><td>Nordeste (base regional, proximidade e foco)</td><td>Sudeste e demais regiões</td></tr>
+                <tr><td><strong>Canal primário</strong></td><td>Parcerias de distribuição (BB, Elgin, Polar) + indicação entre donos</td><td>Feiras do setor, tráfego pago e conteúdo, inside sales</td></tr>
+                <tr class="hl"><td><strong>Proposta de valor</strong></td><td>SaaS + GymPay para resolver inadimplência e organizar a operação</td><td>Camadas ativadas (Go/marketplace) e aumento de ARPA por cliente</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <div class="footer-src"><strong>Fontes:</strong> Análise Ray Consulting a partir do diagnóstico Gymtime e dados setoriais (2026).</div>
+        <div class="footer-sig"><strong>Siglas:</strong> PME = pequena e média empresa · ARPA = receita média por conta · day-use = uso avulso.</div>
+      </div>
+    </div>
+
+  </div>
+  </div>
+</section>
+<!-- ============================================================ BLOCO 02 — MARKET FIT ============================================================ -->
+<section class="view" id="view-b2">
+  <div class="bloco-chapter">
+    <div class="chapter-ghost-num">02</div>
+    <div class="bloco-chapter-inner">
+      <div class="chapter-tag">Seção 2</div>
+      <div class="chapter-title">Market Fit</div>
+      <div class="chapter-rule"></div>
+      <p class="chapter-desc">Validar a sinergia entre o ecossistema Gymtime e o mercado: dimensionar a oportunidade real (TAM/SAM/SOM), mapear o ICP, a concorrência e o posicionamento de preço. Peso de 40% do valor total do programa.</p>
+    </div>
+  </div>
+  <div class="bloco-layout">
+    <aside class="bloco-sidebar">
+    <div class="sub-nav-inner" data-group="b2">
+      <button class="active" onclick="showPanel('b2','b2-p1')">2.1 Metodologia de Dimensionamento</button>
+      <button onclick="showPanel('b2','b2-p2')">2.2 TAM Global</button>
+      <button onclick="showPanel('b2','b2-p3')">2.3 SAM Brasil</button>
+      <button onclick="showPanel('b2','b2-p4')">2.4 SOM SE+NE</button>
+      <button onclick="showPanel('b2','b2-p5')">2.5 Comparativo Deck vs. Ray</button>
+      <button onclick="showPanel('b2','b2-p6')">2.6 Perfis de ICP</button>
+      <button onclick="showPanel('b2','b2-p7')">2.7 Canais de Aquisição</button>
+      <button onclick="showPanel('b2','b2-p8')">2.8 Benchmark · Mapeamento</button>
+      <button onclick="showPanel('b2','b2-p9')">2.8 Pacto e Tecnofit</button>
+      <button onclick="showPanel('b2','b2-p10')">2.8 ABC EVO/W12 e Next Fit</button>
+      <button onclick="showPanel('b2','b2-p11')">2.8 Vindi e Asaas</button>
+      <button onclick="showPanel('b2','b2-p12')">2.8 Wellhub e TotalPass</button>
+      <button onclick="showPanel('b2','b2-p13')">2.9 Leitura Competitiva Consolidada</button>
+      <button onclick="showPanel('b2','b2-p14')">2.10 Matriz de Posicionamento</button>
+      <button onclick="showPanel('b2','b2-p15')">2.11 Coleta de Preços</button>
+      <button onclick="showPanel('b2','b2-p16')">2.12 Captação</button>
+    </div>
+    </aside>
+  <div class="content-wrap" id="b2-panels">
+
+    <!-- ===== 2.1 Metodologia de Dimensionamento ===== -->
+    <div class="panel" id="b2-p1" data-group="b2">
+      <div class="panel-head">
+        <div class="panel-tag">Seção 2 · 2.1 Dimensionamento de Mercado</div>
+        <div class="panel-title">Metodologia de Dimensionamento</div>
+      </div>
+      <div class="block-parts">
+        <div class="part">
+          <p class="body-text lead">O dimensionamento foi reconstruído de forma independente e bottom-up pela Ray, ancorado no mercado fitness brasileiro · não na economia global de wellness e não nos números do próprio deck. Três blocos de evidência, sempre separados: dado direto, premissa explicitada e estimativa de cenário.</p>
+          <div class="part-title">Funil TAM → SAM → SOM</div>
+          <div class="kpi-row">
+            <div class="kpi-card"><div class="kpi-num">~R$ 90 bi</div><div class="kpi-desc">TAM · receita global de provedores de infraestrutura fitness</div></div>
+            <div class="kpi-card teal"><div class="kpi-num">R$ 328–614 mi</div><div class="kpi-desc">SAM · academias endereçáveis no Brasil</div></div>
+            <div class="kpi-card blue"><div class="kpi-num">R$ 212–397 mi</div><div class="kpi-desc">SOM · execução no Sudeste + Nordeste em 3-4 anos</div></div>
+          </div>
+          <div class="gap-grid">
+            <div class="gap-card">
+              <h5>Dado direto</h5>
+              <p>Número publicado por fonte terceira (ACAD, IHRSA/HFA, Sebrae).</p>
+            </div>
+            <div class="gap-card teal-top">
+              <h5>Premissa explicitada</h5>
+              <p>Quando foi preciso extrapolar, a lógica está descrita.</p>
+            </div>
+            <div class="gap-card">
+              <h5>Estimativa de cenário</h5>
+              <p>Conservador · base · otimista.</p>
+            </div>
+          </div>
+          <div class="banner">Nenhum número do pitch deck da Gymtime entrou como insumo · o objetivo é uma base reconstituível e defensável perante investidores.</div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <div class="footer-src"><strong>Fontes:</strong> Reconstrução independente a partir das fontes citadas ao longo da Seção 2 (jul/2026).</div>
+        <div class="footer-sig"><strong>Siglas:</strong> TAM = mercado total · SAM = endereçável · SOM = obtível · bi = bilhões · mi = milhões.</div>
+      </div>
+    </div>
+
+    <!-- ===== 2.2 TAM Global ===== -->
+    <div class="panel" id="b2-p2" data-group="b2">
+      <div class="panel-head">
+        <div class="panel-tag">Seção 2 · 2.2 Dimensionamento de Mercado</div>
+        <div class="panel-title">TAM Global · Visão de Longo Prazo</div>
+      </div>
+      <div class="block-parts">
+        <div class="part">
+          <p class="body-text lead">Contexto: indústria fitness global ~US$ 96 bi/ano (IHRSA/HFA); mercado brasileiro ~R$ 17-20 bi/ano. O TAM abaixo mede a receita dos provedores (software + pagamentos + apps), não o faturamento das academias.</p>
+          <div class="kpi-row">
+            <div class="kpi-card"><div class="kpi-num">~R$ 90 bi</div><div class="kpi-desc">TAM Global (≈ US$ 16 bi/ano) · mercados globais de provedores de infraestrutura fitness</div></div>
+          </div>
+          <div class="table-scroll">
+            <table class="data-table">
+              <thead><tr><th>Componente da composição do TAM Global (R$ bi/ano)</th><th>Valor</th></tr></thead>
+              <tbody>
+                <tr><td>Software (US$ 3 bi)</td><td>R$ 16,5 bi</td></tr>
+                <tr><td>Apps / marketplace (US$ 11 bi)</td><td>R$ 60,5 bi</td></tr>
+                <tr><td>Pagamentos (US$ 96 bi × 2,5%)</td><td>R$ 13,2 bi</td></tr>
+                <tr class="hl"><td><strong>TAM Global</strong></td><td><strong>R$ 90 bi</strong></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="note-box">
+            <div class="ntitle">Premissa</div>
+            <p>TAM Global é teto de visão, não mercado acionável hoje. Medido pelos mercados de provedores (dezenas de bilhões de US$), não pela economia de wellness (trilhões de US$). Câmbio de referência R$ 5,5/US$.</p>
+          </div>
+          <div class="banner">Papéis: TAM Global = ambição · SAM Brasil = estratégia · SOM SE+NE = execução. A tese real de investimento mora no SAM/SOM.</div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <div class="footer-src"><strong>Fontes:</strong> Strategic Market Research (software, 2024); Grand View (apps, 2025); IHRSA/HFA (indústria global, 2024).</div>
+        <div class="footer-sig"><strong>Siglas:</strong> TPV = volume transacionado · GMV = volume bruto de vendas · take rate = comissão sobre volume.</div>
+      </div>
+    </div>
+
+    <!-- ===== 2.3 SAM Brasil ===== -->
+    <div class="panel" id="b2-p3" data-group="b2">
+      <div class="panel-head">
+        <div class="panel-tag">Seção 2 · 2.3 Dimensionamento de Mercado</div>
+        <div class="panel-title">SAM · Mercado Endereçável no Brasil</div>
+      </div>
+      <div class="block-parts">
+        <div class="part">
+          <div class="split-row">
+            <div class="split-left">
+              <div class="stitle">Como calculamos (B2B)</div>
+              <div class="bullet-item"><strong>R$ 800–1.500/mês</strong> · valor por academia madura (3 camadas: SaaS + GymPay + Go) · único dado disponível, autodeclarado no deck.</div>
+              <div class="bullet-item">× 12 = <strong>R$ 9.600–18.000</strong> por academia/ano.</div>
+              <div class="bullet-item">× <strong>34.121 academias</strong> endereçáveis no Brasil (Cortex/ACAD).</div>
+              <div class="bullet-item">= <strong>R$ 328–614 mi</strong> SAM/ano · sem somar mercado de aluno (B2C).</div>
+            </div>
+            <div class="note-box teal">
+              <div class="ntitle">SAM · Brasil</div>
+              <p style="font-size:22px;font-weight:800;color:var(--text);">R$ 328–614 mi<br><span style="font-size:12px;font-weight:700;color:var(--text-dim);">/ano · potencial B2B (cliente maduro)</span></p>
+              <p><strong>Premissa:</strong> R$ 800–1.500/mês é valor de cliente maduro (3 camadas), não a realidade atual (base de ~116 academias). Inclui a comissão do marketplace, capturada pela conta da academia · sem dimensionar um mercado de aluno (B2C) à parte.</p>
+            </div>
+          </div>
+          <div class="banner">O SAM se move dentro da faixa conforme a Gymtime ativa camadas (SaaS → pagamentos → marketplace), elevando o valor por academia.</div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <div class="footer-src"><strong>Fontes:</strong> Cortex/ACAD (nº de academias, 2023); valor por cliente autodeclarado no deck Gymtime (R$ 800–1.500/mês); metodologia Ray Consulting (2026).</div>
+        <div class="footer-sig"><strong>Siglas:</strong> SAM = mercado endereçável · B2B = business to business · B2C = business to consumer.</div>
+      </div>
+    </div>
+
+    <!-- ===== 2.4 SOM SE+NE ===== -->
+    <div class="panel" id="b2-p4" data-group="b2">
+      <div class="panel-head">
+        <div class="panel-tag">Seção 2 · 2.4 Dimensionamento de Mercado</div>
+        <div class="panel-title">SOM · Mercado Obtível (SE + NE)</div>
+      </div>
+      <div class="block-parts">
+        <div class="part">
+          <div class="split-row">
+            <div class="split-left">
+              <div class="stitle">Como calculamos (B2B)</div>
+              <div class="bullet-item"><strong>R$ 9.600–18.000/ano</strong> por academia (R$ 800–1.500/mês, cliente maduro · 3 camadas).</div>
+              <div class="bullet-item">× <strong>22.076 academias</strong> · Sudeste (13.349) + Nordeste (8.727).</div>
+              <div class="bullet-item">= <strong>R$ 212–397 mi</strong> SOM/ano no beachhead SE+NE · sem B2C.</div>
+              <div class="bullet-item">22.076 academias no eixo de execução SE+NE × R$ 9.600–18.000/ano · foco de 3-4 anos, a partir da base regional.</div>
+            </div>
+            <div class="note-box teal">
+              <div class="ntitle">SOM · Sudeste + Nordeste</div>
+              <p style="font-size:22px;font-weight:800;color:var(--text);">R$ 212–397 mi<br><span style="font-size:12px;font-weight:700;color:var(--text-dim);">/ano · potencial B2B no beachhead</span></p>
+              <p><strong>Por que SE + NE:</strong> Sudeste concentra a maior densidade de academias; Nordeste é a base atual da Gymtime (proximidade, parcerias e menor CAC). Juntas, formam o mercado obtível realista do período.</p>
+            </div>
+          </div>
+          <div class="banner">Premissa: o SOM é o teto de captura no horizonte; a penetração efetiva de 3-4 anos é uma fração dele, a partir das ~116 academias de hoje.</div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <div class="footer-src"><strong>Fontes:</strong> Cortex/ACAD (academias por região, 2023); valor por cliente autodeclarado no deck Gymtime; metodologia Ray Consulting (2026).</div>
+        <div class="footer-sig"><strong>Siglas:</strong> SOM = mercado obtível · SE = Sudeste · NE = Nordeste · B2C = business to consumer.</div>
+      </div>
+    </div>
+
+    <!-- ===== 2.5 Comparativo Deck vs. Ray ===== -->
+    <div class="panel" id="b2-p5" data-group="b2">
+      <div class="panel-head">
+        <div class="panel-tag">Seção 2 · 2.5 Dimensionamento de Mercado</div>
+        <div class="panel-title">Comparativo · Deck Gymtime vs. Reconstrução Ray</div>
+      </div>
+      <div class="block-parts">
+        <div class="part">
+          <div class="table-scroll">
+            <table class="data-table">
+              <thead><tr><th>Métrica</th><th>Deck Gymtime</th><th>Reconstrução Ray</th><th>Leitura</th></tr></thead>
+              <tbody>
+                <tr><td><strong>TAM</strong></td><td class="neg">US$ 3,5-8 tri</td><td>~R$ 90 bi (~US$ 16 bi)</td><td>O deck usava a economia global de wellness; o TAM correto é a receita de provedores de infraestrutura fitness · ordens de grandeza menor.</td></tr>
+                <tr><td><strong>SAM</strong></td><td class="neg">US$ 95,5-127 bi</td><td>R$ 328–614 mi</td><td>Recalibrado bottom-up (academias endereçáveis × valor/academia), não um percentual do wellness global.</td></tr>
+                <tr><td><strong>SOM</strong></td><td class="neg">US$ 4,63-7,54 bi</td><td>R$ 212–397 mi</td><td>Reduzido a execução realista SE+NE em 3-4 anos.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <div class="footer-src"><strong>Fontes:</strong> Deck Gymtime (abr/2026); reconstrução independente Ray.</div>
+        <div class="footer-sig"><strong>Siglas:</strong> TAM/SAM/SOM = mercado total/endereçável/obtível.</div>
+      </div>
+    </div>
+
+    <!-- ===== 2.6 Perfis de ICP ===== -->
+    <div class="panel" id="b2-p6" data-group="b2">
+      <div class="panel-head">
+        <div class="panel-tag">Seção 2 · 2.6 Perfil de ICP</div>
+        <div class="panel-title">Os Perfis de Cliente Ideal (ICP)</div>
+      </div>
+      <div class="block-parts">
+        <div class="part">
+          <div class="profile-row">
+            <div class="profile-card">
+              <h5>Rodrigo · Dono de academia PME · ICP 1 Primário</h5>
+              <p>1-3 unidades, 200-800 alunos, Nordeste; gestão centralizada nele.<br><strong>Modelo Gymtime:</strong> entra por SaaS + GymPay (resolve a inadimplência do boleto) e expande para o Go · as três camadas.<br><strong>Dores:</strong> inadimplência alta, churn silencioso, sistemas desconectados, ociosidade fora do pico.<br><strong>Trigger:</strong> dor aguda de fluxo de caixa; indicação de outro dono; oferta de entrada de baixo atrito.<br><strong>Objeção:</strong> "já tenho um sistema"; medo de migração; sensibilidade a preço e taxas.</p>
+            </div>
+            <div class="profile-card p">
+              <h5>Marina · Estúdio boutique / rede pequena · ICP 2</h5>
+              <p>Crossfit, pilates, funcional; público A/B; 3-8 unidades.<br><strong>Modelo Gymtime:</strong> SaaS + Gymtime Go (aulas avulsas / day-use) + GymPay · foco no marketplace de experiência.<br><strong>Dores:</strong> experiência do aluno, retenção e necessidade de novos fluxos de receita.<br><strong>Trigger:</strong> diferenciação via app/gamificação; monetização de horários ociosos.<br><strong>Objeção:</strong> ticket alto exige ROI claro; abertura a tecnologia, mas tempo de setup.</p>
+            </div>
+            <div class="profile-card">
+              <h5>Bianca · Aluna / consumidora · Lado da Demanda (B2C)</h5>
+              <p>22-40 anos, rotina flexível, resiste ao plano mensal fixo.<br><strong>Modelo Gymtime:</strong> somente Gymtime Go · app pay-per-use, day-use e a "Moeda da Saúde".<br><strong>Dores:</strong> falta de flexibilidade; não quer plano fixo; quer recompensa por se cuidar.<br><strong>Trigger:</strong> descoberta via app/indicação; flexibilidade e gamificação.<br><strong>Objeção:</strong> preço por uso vs. plano; hábito de frequência irregular.</p>
+            </div>
+            <div class="profile-card p">
+              <h5>Rede / Franquia · Aspiracional · expansão futura</h5>
+              <p>Redes e franquias de maior porte, alto volume de alunos.<br><strong>Modelo Gymtime:</strong> as três camadas em escala · SaaS multiunidade + GymPay + Go como benefício de rede.<br><strong>Dores:</strong> padronização entre unidades; consolidação de dados; escala de cobrança.<br><strong>Trigger:</strong> necessidade de padronizar operação e dados na expansão.<br><strong>Objeção:</strong> contratos e integrações já existentes; ciclo de decisão longo.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <div class="footer-src"><strong>Fontes:</strong> ICP construído a partir do diagnóstico Gymtime e de pesquisa de mercado (jul/2026).</div>
+        <div class="footer-sig"><strong>Siglas:</strong> ICP = perfil de cliente ideal · PME = pequena e média empresa · B2C = business to consumer · ROI = retorno sobre investimento.</div>
+      </div>
+    </div>
+
+    <!-- ===== 2.7 Canais de Aquisição ===== -->
+    <div class="panel" id="b2-p7" data-group="b2">
+      <div class="panel-head">
+        <div class="panel-tag">Seção 2 · 2.7 Canais de Aquisição</div>
+        <div class="panel-title">Canais de Aquisição por Público</div>
+      </div>
+      <div class="block-parts">
+        <div class="part">
+          <div class="table-scroll">
+            <table class="data-table">
+              <thead><tr><th>Canal</th><th>Prioridade</th><th>Por quê</th></tr></thead>
+              <tbody>
+                <tr class="hl"><td><strong>Parcerias de distribuição (BB PJ, Elgin, Polar)</strong></td><td><span class="stars">★★★★★</span> Crítico</td><td>Canal já firmado; escala com credibilidade institucional junto às academias.</td></tr>
+                <tr><td><strong>Ecossistema (Porto Digital, AMPLIFICA/ALI, Sebrae)</strong></td><td><span class="stars">★★★★<span class="off">☆</span></span> Alto</td><td>Legitimidade e acesso qualificado no Nordeste.</td></tr>
+                <tr><td><strong>Feiras do setor (maior feira fitness da América do Sul)</strong></td><td><span class="stars">★★★★<span class="off">☆</span></span> Alto</td><td>Concentra os decisores; geração de pipeline B2B.</td></tr>
+                <tr><td><strong>Indicação entre donos + inside sales</strong></td><td><span class="stars">★★★★<span class="off">☆</span></span> Alto</td><td>Alta conversão em mercado de confiança.</td></tr>
+                <tr><td><strong>Tráfego pago + conteúdo (growth)</strong></td><td><span class="stars">★★★<span class="off">☆☆</span></span> Médio</td><td>Escalável; exige CAC controlado.</td></tr>
+                <tr><td><strong>App / gamificação / indicação (Gymtime Go · B2C)</strong></td><td><span class="stars">★★★★<span class="off">☆</span></span> Alto</td><td>Alimenta o efeito de rede do marketplace · motor da demanda.</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="banner">Demanda: "Bianca" (aluna B2C) é o motor do efeito de rede · quanto mais alunos ativos no Gymtime Go, maior o valor do marketplace para as academias · o verdadeiro moat do ecossistema.</div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <div class="footer-src"><strong>Fontes:</strong> Análise Ray Consulting sobre diagnóstico Gymtime (2026).</div>
+        <div class="footer-sig"><strong>Siglas:</strong> B2B = business to business · B2C = business to consumer · CAC = custo de aquisição.</div>
+      </div>
+    </div>
+
+    <!-- ===== 2.8 Benchmark · Mapeamento ===== -->
+    <div class="panel" id="b2-p8" data-group="b2">
+      <div class="panel-head">
+        <div class="panel-tag">Seção 2 · 2.8 Benchmark de Concorrência</div>
+        <div class="panel-title">Benchmark de Concorrência · Mapeamento</div>
+      </div>
+      <div class="block-parts">
+        <div class="part">
+          <div class="part-title">Concorrentes diretos · gestão de academias (SaaS)</div>
+          <div class="table-scroll">
+            <table class="data-table">
+              <thead><tr><th>Empresa</th><th>O que faz</th><th>Posição</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Pacto</strong></td><td>Gestão completa de academias (ERP, CRM, cobrança recorrente)</td><td>Líder consolidado; gestão + pagamentos já integrados</td></tr>
+                <tr><td><strong>Tecnofit</strong></td><td>Gestão + app do aluno + pagamentos para academias e estúdios</td><td>Forte em SaaS fitness; base ampla</td></tr>
+                <tr><td><strong>ABC EVO / W12</strong></td><td>Gestão para academias, com escala após consolidação W12</td><td>Grande porte; foco em redes e médias/grandes</td></tr>
+                <tr><td><strong>Next Fit</strong></td><td>Gestão para academias e estúdios de menor porte</td><td>Competidor direto no ICP PME</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="part">
+          <div class="part-title">Concorrentes adjacentes · pagamentos e wellness corporativo</div>
+          <div class="table-scroll">
+            <table class="data-table">
+              <thead><tr><th>Empresa</th><th>O que faz</th><th>Posição</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Vindi</strong></td><td>Plataforma de pagamentos e cobrança recorrente (assinaturas)</td><td>Ameaça a camada de pagamentos (GymPay)</td></tr>
+                <tr><td><strong>Asaas</strong></td><td>Conta digital + cobrança/BaaS para PMEs</td><td>Concorre no BaaS/pagamentos das academias</td></tr>
+                <tr><td><strong>Wellhub (ex-Gympass)</strong></td><td>Marketplace de wellness corporativo B2B2C</td><td>Dominante no benefício corporativo; território a evitar frontalmente</td></tr>
+                <tr><td><strong>TotalPass</strong></td><td>Benefício corporativo de acesso a academias</td><td>Concorrente do Wellhub no corporativo</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="banner">Síntese: gestão + pagamentos já é padrão entre os diretos, mas via infraestrutura de terceiros (Vindi/Asaas usados como intermediárias, inclusive por Pacto, Tecnofit, ABC EVO/W12 e Next Fit); nenhum deles une gestão + pagamentos próprios + marketplace de demanda B2C (day-use) numa stack vertical para PME · o GymPay, proprietário da Gymtime, reforça esse espaço em branco.</div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <div class="footer-src"><strong>Fontes:</strong> Sites institucionais; imprensa especializada; análise Ray Consulting; deck Gymtime (abr/2026); reunião de apresentação com o cliente (set/2026).</div>
+        <div class="footer-sig"><strong>Siglas:</strong> SaaS = Software as a Service · BaaS = Banking as a Service · B2B2C = Business to Business to Consumer.</div>
+      </div>
+    </div>
+
+    <!-- ===== 2.8 Pacto e Tecnofit ===== -->
+    <div class="panel" id="b2-p9" data-group="b2">
+      <div class="panel-head">
+        <div class="panel-tag">Seção 2 · 2.8 Benchmark · Gestão (SaaS)</div>
+        <div class="panel-title">Pacto e Tecnofit · Líderes Consolidados de Gestão de Academias</div>
+      </div>
+      <div class="block-parts">
+        <div class="part">
+          <div class="two-col">
+            <div class="col">
+              <div class="col-header">Pacto · Direto</div>
+              <p class="body-text" style="margin-bottom:10px;">Gestão completa: ERP, CRM e cobrança recorrente.</p>
+              <div class="col-body">
+                <div class="col-item"><strong>Força:</strong> líder de mercado, grande base instalada, marca forte e distribuição ampla.</div>
+                <div class="col-item"><strong>Limitação:</strong> não opera marketplace de demanda B2C / day-use; foco na operação da academia. A cobrança recorrente também roda sobre infraestrutura de pagamentos de terceiros, não um sistema financeiro próprio.</div>
+                <div class="col-item"><strong>Leitura p/ Gymtime:</strong> "gestão + cobrança integradas" já é padrão aqui · a Gymtime precisa diferenciar pelo Go (demanda), pela stack vertical e pelo GymPay, sistema financeiro proprietário (não revendido) segundo o cliente.</div>
+              </div>
+            </div>
+            <div class="col teal">
+              <div class="col-header">Tecnofit · Direto</div>
+              <p class="body-text" style="margin-bottom:10px;">Gestão + app do aluno + pagamentos.</p>
+              <div class="col-body">
+                <div class="col-item"><strong>Força:</strong> app e experiência do aluno bem resolvidos; base ampla de estúdios e academias.</div>
+                <div class="col-item"><strong>Limitação:</strong> sem marketplace pay-per-use de rede (efeito de rede B2C). Assim como o Pacto, não tem sistema de pagamentos próprio: os pagamentos que oferece são intermediados por infraestrutura de terceiros.</div>
+                <div class="col-item"><strong>Leitura p/ Gymtime:</strong> o day-use e o efeito de rede do Go precisam ser a prova de diferenciação frente a um app já maduro · o GymPay, proprietário e customizável, é um segundo diferencial confirmado pelo cliente.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <div class="footer-src"><strong>Fontes:</strong> Sites institucionais, imprensa especializada e análise competitiva Ray Consulting (2026); reunião de apresentação com o cliente (set/2026).</div>
+        <div class="footer-sig"><strong>Siglas:</strong> SaaS = Software as a Service · BaaS = Banking as a Service · B2C = business to consumer · GMV = volume bruto de vendas.</div>
+      </div>
+    </div>
+
+    <!-- ===== 2.8 ABC EVO/W12 e Next Fit ===== -->
+    <div class="panel" id="b2-p10" data-group="b2">
+      <div class="panel-head">
+        <div class="panel-tag">Seção 2 · 2.8 Benchmark · Gestão (SaaS)</div>
+        <div class="panel-title">ABC EVO / W12 e Next Fit · Escala em Redes e Entrada no PME</div>
+      </div>
+      <div class="block-parts">
+        <div class="part">
+          <div class="two-col">
+            <div class="col">
+              <div class="col-header">ABC EVO / W12 · Direto</div>
+              <p class="body-text" style="margin-bottom:10px;">Gestão de academias com escala após a consolidação W12.</p>
+              <div class="col-body">
+                <div class="col-item"><strong>Força:</strong> porte, capital e presença em redes e academias médias/grandes.</div>
+                <div class="col-item"><strong>Limitação:</strong> menos foco no micro-PME e praticamente nenhum no consumidor B2C. Também não opera sistema de pagamentos próprio, dependendo de integrações de terceiros para cobrança.</div>
+                <div class="col-item"><strong>Leitura p/ Gymtime:</strong> abre espaço no PME menor e, sobretudo, na camada de demanda (Go) e de pagamentos próprios (GymPay), onde o incumbente não atua.</div>
+              </div>
+            </div>
+            <div class="col teal">
+              <div class="col-header">Next Fit · Direto</div>
+              <p class="body-text" style="margin-bottom:10px;">Gestão para academias e estúdios de menor porte.</p>
+              <div class="col-body">
+                <div class="col-item"><strong>Força:</strong> preço e simplicidade competitivos no ICP PME · concorrente direto de entrada.</div>
+                <div class="col-item"><strong>Limitação:</strong> sem sistema de pagamentos próprio; a camada de cobrança e o marketplace de demanda são pouco desenvolvidos, dependendo de terceiros.</div>
+                <div class="col-item"><strong>Leitura p/ Gymtime:</strong> concorrente direto na porta de entrada; a Gymtime ganha ativando camadas (GymPay, proprietário, + Go) e elevando o ARPA.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <div class="footer-src"><strong>Fontes:</strong> Sites institucionais, imprensa especializada e análise competitiva Ray Consulting (2026); reunião de apresentação com o cliente (set/2026).</div>
+        <div class="footer-sig"><strong>Siglas:</strong> SaaS = Software as a Service · BaaS = Banking as a Service · B2C = business to consumer · GMV = volume bruto de vendas.</div>
+      </div>
+    </div>
+
+    <!-- ===== 2.8 Vindi e Asaas ===== -->
+    <div class="panel" id="b2-p11" data-group="b2">
+      <div class="panel-head">
+        <div class="panel-tag">Seção 2 · 2.8 Benchmark · Pagamentos/BaaS</div>
+        <div class="panel-title">Vindi e Asaas · Concorrentes da Camada de Pagamentos (GymPay)</div>
+      </div>
+      <div class="block-parts">
+        <div class="part">
+          <div class="two-col">
+            <div class="col">
+              <div class="col-header">Vindi · Adjacente</div>
+              <p class="body-text" style="margin-bottom:10px;">Pagamentos e cobrança recorrente para assinaturas.</p>
+              <div class="col-body">
+                <div class="col-item"><strong>Força:</strong> infraestrutura de cobrança madura e confiável; forte em recorrência.</div>
+                <div class="col-item"><strong>Limitação:</strong> horizontal, sem contexto vertical de fitness nem gestão da academia; segundo o cliente, não opera sistema de pagamentos próprio, e sim infraestrutura de terceiros repassada ao cliente final.</div>
+                <div class="col-item"><strong>Leitura p/ Gymtime:</strong> o GymPay compete por estar embutido no fluxo de gestão e por ser um sistema financeiro proprietário da Gymtime · menos atrito que integrar um gateway externo, e uma camada que o concorrente não controla de ponta a ponta.</div>
+              </div>
+            </div>
+            <div class="col teal">
+              <div class="col-header">Asaas · Adjacente</div>
+              <p class="body-text" style="margin-bottom:10px;">Conta digital + cobrança / BaaS para PMEs.</p>
+              <div class="col-body">
+                <div class="col-item"><strong>Força:</strong> BaaS e conta digital robustos; base ampla de PMEs.</div>
+                <div class="col-item"><strong>Limitação:</strong> solução genérica, sem inteligência específica do setor fitness; segundo o cliente, também opera sobre infraestrutura financeira de terceiros, repassada ao cliente final.</div>
+                <div class="col-item"><strong>Leitura p/ Gymtime:</strong> a vantagem da Gymtime é o dado fitness, a integração nativa gestão-pagamento-demanda e a propriedade do sistema financeiro (GymPay), que a Asaas não tem.</div>
+              </div>
+            </div>
+          </div>
+          <div class="banner">Atualização (set/2026): em reunião de apresentação do diagnóstico, o cliente esclareceu que os fornecedores de solução financeira do setor, incluindo Vindi e Asaas, não têm sistema de pagamentos próprio · eles utilizam infraestrutura de terceiros e a repassam ao cliente final. O GymPay, por ser proprietário da Gymtime, é um diferencial estrutural frente a esses concorrentes, não apenas de posicionamento.</div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <div class="footer-src"><strong>Fontes:</strong> Sites institucionais, imprensa especializada e análise competitiva Ray Consulting (2026); esclarecimento do cliente em reunião de apresentação (set/2026).</div>
+        <div class="footer-sig"><strong>Siglas:</strong> SaaS = Software as a Service · BaaS = Banking as a Service · B2C = business to consumer · GMV = volume bruto de vendas.</div>
+      </div>
+    </div>
+
+    <!-- ===== 2.8 Wellhub e TotalPass ===== -->
+    <div class="panel" id="b2-p12" data-group="b2">
+      <div class="panel-head">
+        <div class="panel-tag">Seção 2 · 2.8 Benchmark · Wellness Corporativo</div>
+        <div class="panel-title">Wellhub e TotalPass · Marketplace de Wellness Corporativo (B2B2C)</div>
+      </div>
+      <div class="block-parts">
+        <div class="part">
+          <div class="two-col">
+            <div class="col">
+              <div class="col-header">Wellhub (ex-Gympass) · Adjacente</div>
+              <p class="body-text" style="margin-bottom:10px;">Marketplace de wellness como benefício corporativo.</p>
+              <div class="col-body">
+                <div class="col-item"><strong>Força:</strong> escala global, marca forte e demanda corporativa agregada.</div>
+                <div class="col-item"><strong>Limitação:</strong> foco no benefício corporativo (B2B), não na gestão da academia nem no day-use direto.</div>
+                <div class="col-item"><strong>Leitura p/ Gymtime:</strong> território a evitar frontalmente · o Go atua no day-use direto ao consumidor e integra a gestão da academia. Nenhum dos dois opera um sistema de pagamentos proprietário para academias, como o GymPay.</div>
+              </div>
+            </div>
+            <div class="col teal">
+              <div class="col-header">TotalPass · Adjacente</div>
+              <p class="body-text" style="margin-bottom:10px;">Benefício corporativo de acesso a academias.</p>
+              <div class="col-body">
+                <div class="col-item"><strong>Força:</strong> presença no RH corporativo; rede ampla de academias parceiras.</div>
+                <div class="col-item"><strong>Limitação:</strong> mesmo recorte B2B corporativo; não resolve gestão nem cobrança da academia.</div>
+                <div class="col-item"><strong>Leitura p/ Gymtime:</strong> reforça que a disputa não é no corporativo · a Gymtime cria demanda B2C própria e a devolve para a academia, com o GymPay como camada financeira proprietária que nenhum dos dois oferece.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <div class="footer-src"><strong>Fontes:</strong> Sites institucionais, imprensa especializada e análise competitiva Ray Consulting (2026); reunião de apresentação com o cliente (set/2026).</div>
+        <div class="footer-sig"><strong>Siglas:</strong> SaaS = Software as a Service · BaaS = Banking as a Service · B2C = business to consumer · GMV = volume bruto de vendas.</div>
+      </div>
+    </div>
+
+    <!-- ===== 2.9 Leitura Competitiva Consolidada ===== -->
+    <div class="panel" id="b2-p13" data-group="b2">
+      <div class="panel-head">
+        <div class="panel-tag">Seção 2 · 2.9 Leitura Competitiva</div>
+        <div class="panel-title">Leitura Competitiva Consolidada</div>
+      </div>
+      <div class="block-parts">
+        <div class="part">
+          <p class="body-text lead">Síntese qualitativa dos oito players · onde cada um é forte e a lacuna que a Gymtime explora.</p>
+          <div class="table-scroll">
+            <table class="data-table dense">
+              <thead><tr><th>Player</th><th>Categoria</th><th>Força principal</th><th>Lacuna vs. Gymtime</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Pacto</strong></td><td>Gestão (direto)</td><td>Líder, base e marca</td><td>Sem marketplace B2C; pagamentos via terceiros, não próprios</td></tr>
+                <tr><td><strong>Tecnofit</strong></td><td>Gestão (direto)</td><td>App e experiência</td><td>Sem rede pay-per-use nem pagamentos próprios</td></tr>
+                <tr><td><strong>ABC EVO / W12</strong></td><td>Gestão (direto)</td><td>Escala em redes</td><td>Fraco no micro-PME/B2C; sem pagamentos próprios</td></tr>
+                <tr><td><strong>Next Fit</strong></td><td>Gestão (direto)</td><td>Preço/simplicidade PME</td><td>Sem sistema de pagamentos próprio nem marketplace</td></tr>
+                <tr><td><strong>Vindi</strong></td><td>Pagamentos</td><td>Cobrança recorrente madura</td><td>Horizontal, fora do fluxo de gestão; sem sistema de pagamentos próprio, opera sobre infraestrutura de terceiros</td></tr>
+                <tr><td><strong>Asaas</strong></td><td>Pagamentos / BaaS</td><td>Conta + BaaS PME</td><td>Genérico, sem dado fitness; sem sistema de pagamentos próprio, opera sobre infraestrutura de terceiros</td></tr>
+                <tr><td><strong>Wellhub</strong></td><td>Wellness corporativo</td><td>Escala e demanda corporativa</td><td>Não gere a academia nem o day-use</td></tr>
+                <tr><td><strong>TotalPass</strong></td><td>Wellness corporativo</td><td>Rede corporativa de RH</td><td>Mesmo recorte B2B; sem gestão</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="banner">Espaço em branco: nenhum player une gestão + pagamentos + marketplace de demanda B2C numa única stack vertical para academias PME · é o posicionamento a defender. O GymPay reforça esse espaço por ser um sistema financeiro proprietário, diferente dos concorrentes de pagamento que revendem infraestrutura de terceiros (confirmado pelo cliente, set/2026).</div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <div class="footer-src"><strong>Fontes:</strong> Síntese Ray Consulting a partir do benchmark anterior (2026); esclarecimento do cliente em reunião de apresentação (set/2026).</div>
+        <div class="footer-sig"><strong>Siglas:</strong> B2C = business to consumer · PME = pequena e média empresa · BaaS = Banking as a Service.</div>
+      </div>
+    </div>
+
+    <!-- ===== 2.10 Matriz de Posicionamento ===== -->
+    <div class="panel" id="b2-p14" data-group="b2">
+      <div class="panel-head">
+        <div class="panel-tag">Seção 2 · 2.10 Posicionamento</div>
+        <div class="panel-title">Matriz de Posicionamento Competitivo</div>
+      </div>
+      <div class="block-parts">
+        <div class="part">
+          <p class="body-text lead">Eixos: amplitude do ecossistema (módulo único → stack completa) × foco de cliente (redes/corporativo → PME + consumidor B2C).</p>
+          <div class="matrix-wrap">
+            <div class="matrix-yaxis"><span>↑ Stack completa · Módulo único ↓</span></div>
+            <div class="matrix-main">
+              <div class="matrix-xaxis"><span>← Redes/corporativo</span><span>PME + B2C →</span></div>
+              <div class="matrix-grid2">
+                <div class="matrix-cell"><h5>Redes/corporativo · módulo único</h5><p>Wellhub e TotalPass · wellness corporativo (demanda B2B), sem gestão da academia.</p></div>
+                <div class="matrix-cell"><h5>PME · módulo único</h5><p>Pacto, Tecnofit, Next Fit (gestão) e Vindi, Asaas (pagamentos, sem sistema próprio, revendem infraestrutura de terceiros) · fortes em uma camada.</p></div>
+                <div class="matrix-cell teal"><h5>Redes/corporativo · stack ampla</h5><p>ABC EVO / W12 · gestão com escala em redes e academias maiores.</p></div>
+                <div class="matrix-cell highlight"><h5>PME + B2C · stack completa · posição da Gymtime</h5><p>Gymtime · gestão + pagamentos (GymPay, sistema próprio e customizável) + marketplace de demanda numa única stack vertical para PME. Quadrante praticamente vazio no Brasil.</p></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <div class="footer-src"><strong>Fontes:</strong> Análise de posicionamento Ray Consulting (2026); reunião de apresentação com o cliente (set/2026).</div>
+        <div class="footer-sig"><strong>Siglas:</strong> B2C = business to consumer · PME = pequena e média empresa.</div>
+      </div>
+    </div>
+
+    <!-- ===== 2.11 Coleta de Preços ===== -->
+    <div class="panel" id="b2-p15" data-group="b2">
+      <div class="panel-head">
+        <div class="panel-tag">Seção 2 · 2.11 Precificação</div>
+        <div class="panel-title">Coleta de Preços e Modelo de Receita</div>
+      </div>
+      <div class="block-parts">
+        <div class="part">
+          <div class="table-scroll">
+            <table class="data-table">
+              <thead><tr><th>Camada / produto</th><th>Modelo de preço</th><th>Faixa</th><th>Observação</th></tr></thead>
+              <tbody>
+                <tr><td><strong>SaaS (Gymtime)</strong></td><td>Assinatura mensal em degraus por porte/recursos</td><td>R$ 149-599+</td><td>Entrada de baixo atrito; sobe conforme unidades e módulos</td></tr>
+                <tr><td><strong>Pagamentos (GymPay)</strong></td><td>Monetiza a redução de inadimplência, não o spread</td><td>take rate</td><td>Pix Automático destrói o MDR; valor está em reter receita, não em taxa de cartão</td></tr>
+                <tr><td><strong>Marketplace (Gymtime Go)</strong></td><td>Comissão sobre o volume transacionado</td><td>15%-20% do GMV</td><td>Receita cresce com o day-use e o efeito de rede</td></tr>
+                <tr><td>Concorrentes gestão</td><td>Mensalidade de SaaS por porte (Pacto, Tecnofit, Next Fit)</td><td>R$ ~100-600</td><td>Referência de mercado para a camada de gestão</td></tr>
+                <tr><td>Concorrentes pagamentos</td><td>Taxa por transação / MDR (Vindi, Asaas)</td><td>% por transação</td><td>Horizontal, sem integração nativa à gestão da academia</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="banner">Evolução por cliente: de R$ 200/mês (só SaaS) para R$ 800-1.500/mês com as três camadas ativadas · a expansão de ARPA é o motor de crescimento da receita.</div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <div class="footer-src"><strong>Fontes:</strong> Preços públicos de mercado e diagnóstico Gymtime (2026).</div>
+        <div class="footer-sig"><strong>Siglas:</strong> MDR = taxa de desconto do lojista · GMV = volume bruto de vendas · ARPA = receita média por conta · take rate = comissão sobre volume.</div>
+      </div>
+    </div>
+
+    <!-- ===== 2.12 Captação ===== -->
+    <div class="panel" id="b2-p16" data-group="b2">
+      <div class="panel-head">
+        <div class="panel-tag">Seção 2 · 2.12 Captação</div>
+        <div class="panel-title">Captação · Ambiente e Investidores Ativos</div>
+      </div>
+      <div class="block-parts">
+        <div class="part">
+          <div class="banner">Dado: em 2025 houve ~43 rodadas de healthtech no Brasil (~R$ 1,21 bi), com valuations comprimidos. Tickets típicos: pré-seed R$ 100 mil - R$ 1 mi (valuation R$ 3-6 mi); seed R$ 3-10 mi (valuation R$ 10-30 mi).</div>
+          <div class="note-box teal" style="max-width:none;">
+            <div class="ntitle">Recomendação</div>
+            <p>A rodada atual (R$ 500 mil por 10% = valuation ~R$ 5 mi) é coerente com a faixa de pré-seed. Estruturar o mútuo conversível com teto e desconto claros e amarrar o uso de recursos a marcos de tração (academias ativas, TPV, ARPA) para preparar a pré-seed de 2026.</p>
+          </div>
+          <div class="gap-grid">
+            <div class="gap-card highlight">
+              <h5>★ Prioritário · Triaxis Capital</h5>
+              <p>Gestora sediada em Recife (SaaS B2B/B2B2C, fintech, healthtech). Aproximação prioritária pelo seu mandato semente · ela gere o FIP Nordeste Capital Semente. O fundo de growth da casa mira faturamento &gt; R$ 20 mi, fora do estágio atual.</p>
+            </div>
+            <div class="gap-card teal-top">
+              <h5>Semente · Early-stage · FIP Nordeste Capital Semente</h5>
+              <p>Fundo semente gerido pela Triaxis (BNB + Finep + Sebrae, ~R$ 150 mi). Foca early-stage nordestino com faturamento até ~R$ 1 mi · encaixe direto no pré-seed da Gymtime.</p>
+            </div>
+            <div class="gap-card">
+              <h5>Canais · Inova+Invest · Anjos</h5>
+              <p>Programa ABVCAP (Healthtech, SaaS, IA, Fintech) e Urca Angels / clubes regionais para complementar a rodada.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <div class="footer-src"><strong>Fontes:</strong> Futuro da Saúde (2025); Startups.com.br; Exame; Agência Gov (BNB/Finep/Sebrae).</div>
+        <div class="footer-sig"><strong>Siglas:</strong> FIP = Fundo de Investimento em Participações · BNB = Banco do Nordeste · ABVCAP = Associação Brasileira de Private Equity e Venture Capital.</div>
+      </div>
+    </div>
+
+  </div>
+  </div>
+</section>
+<!-- ============================================================ BLOCO 03 — GO-TO-MARKET ============================================================ -->
+<section class="view" id="view-b3">
+  <div class="bloco-chapter">
+    <div class="chapter-ghost-num">03</div>
+    <div class="bloco-chapter-inner">
+      <div class="chapter-tag">Seção 3</div>
+      <div class="chapter-title">Go-to-Market</div>
+      <div class="chapter-rule"></div>
+      <p class="chapter-desc">Transformar os aprendizados em uma estratégia de entrada acionável e preparar a Gymtime para escalar comercialmente e iniciar conversas com investidores com um dimensionamento defensável. Peso de 30% do valor total do programa.</p>
+    </div>
+  </div>
+  <div class="bloco-layout">
+    <aside class="bloco-sidebar">
+    <div class="sub-nav-inner" data-group="b3">
+      <button class="active" onclick="showPanel('b3','b3-p1')">3.1 Estratégia de GTM Aplicada</button>
+      <button onclick="showPanel('b3','b3-p2')">3.2 Quem, o Quê e Como</button>
+      <button onclick="showPanel('b3','b3-p3')">3.3 As Quatro Perguntas do GTM</button>
+      <button onclick="showPanel('b3','b3-p4')">3.4 Framework por Nº de Clientes</button>
+      <button onclick="showPanel('b3','b3-p5')">3.5 Framework de Entrada de Mercado</button>
+      <button onclick="showPanel('b3','b3-p6')">3.6 Cinco Testes de Prontidão Comercial</button>
+      <button onclick="showPanel('b3','b3-p7')">3.7 Autoavaliação Contra os Mitos de GTM</button>
+      <button onclick="showPanel('b3','b3-p8')">3.8 Jornada de Proposta de Valor</button>
+      <button onclick="showPanel('b3','b3-p9')">3.9 Funis de Vendas e Canais</button>
+      <button onclick="showPanel('b3','b3-p10')">3.10 Matriz Produto × Mercado</button>
+      <button onclick="showPanel('b3','b3-p11')">3.11 Narrativa para Investidores</button>
+      <button onclick="showPanel('b3','b3-p12')">3.12 Decisões a Tomar Agora</button>
+    </div>
+    </aside>
+  <div class="content-wrap" id="b3-panels">
+
+    <!-- ===== 3.1 Estratégia de GTM Aplicada ===== -->
+    <div class="panel" id="b3-p1" data-group="b3">
+      <div class="panel-head">
+        <div class="panel-tag">Seção 3 · 3.1 Go-to-Market</div>
+        <div class="panel-title">Estratégia de GTM Aplicada à Gymtime</div>
+      </div>
+      <div class="block-parts">
+        <div class="part">
+          <div class="gap-grid">
+            <div class="gap-card">
+              <h5>Where to Play · Onde jogar</h5>
+              <p>ICP priorizado Rodrigo &gt; Marina &gt; Bianca &gt; Rede/Franquia, com largada pela base regional Nordeste antes de amplitude.</p>
+            </div>
+            <div class="gap-card teal-top">
+              <h5>How to Win · Como vencer</h5>
+              <p>Nenhum concorrente une gestão + pagamentos + marketplace de demanda B2C numa única stack vertical para academias PME · quadrante praticamente vazio no Brasil. O GymPay, sistema financeiro próprio e customizável, é um segundo diferencial: os concorrentes de pagamento (Vindi, Asaas) revendem infraestrutura de terceiros, inclusive para os concorrentes diretos da Gymtime.</p>
+            </div>
+            <div class="gap-card highlight">
+              <h5>How to Get There · Como chegar lá</h5>
+              <p>Movimento sequencial por camada (SaaS → GymPay → Go), sequenciado pela régua 1-10-100, parcerias de distribuição como canal crítico e evolução de ARPA de R$ 200 para R$ 800-1.500/mês como motor de receita.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <div class="footer-src"><strong>Fontes:</strong> Diagnóstico Gymtime (2026); reunião de apresentação com o cliente (set/2026).</div>
+        <div class="footer-sig"><strong>Siglas:</strong> ICP = perfil de cliente ideal · B2C = business to consumer · PME = pequena e média empresa · ARPA = receita média por conta.</div>
+      </div>
+    </div>
+
+    <!-- ===== 3.2 Quem, o Quê e Como ===== -->
+    <div class="panel" id="b3-p2" data-group="b3">
+      <div class="panel-head">
+        <div class="panel-tag">Seção 3 · 3.2 Go-to-Market</div>
+        <div class="panel-title">Quem, o Quê e Como</div>
+      </div>
+      <div class="block-parts">
+        <div class="part">
+          <p class="body-text lead">A Gymtime opera dois movimentos coerentes com o triângulo WHO × WHAT × HOW: um do lado da oferta (B2B) e outro do lado da demanda (B2C), que se retroalimentam.</p>
+          <div class="two-col">
+            <div class="col">
+              <div class="col-header">Lado Oferta · B2B Academias</div>
+              <div style="font-size:11px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:var(--text-dim);margin-top:2px;">Partner-led + Founder-led</div>
+              <div class="col-body">
+                <div class="col-item"><strong>Who · Clientes:</strong> Rodrigo, Marina (ICP 1 e 2).</div>
+                <div class="col-item"><strong>What · Oferta:</strong> SaaS + GymPay · entrada de baixo atrito.</div>
+                <div class="col-item"><strong>How · Canal:</strong> parcerias de distribuição (BB, Elgin, Polar) como movimento crítico, mais indicação entre donos e inside sales (founder-led).</div>
+                <div class="col-item"><strong>Por que essa combinação:</strong> mercado pulverizado e de baixa confiança institucional (~95% MPE) · parcerias emprestam credibilidade que um movimento 100% outbound não teria.</div>
+              </div>
+            </div>
+            <div class="col teal">
+              <div class="col-header">Lado Demanda · B2C Alunos</div>
+              <div style="font-size:11px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:var(--text-dim);margin-top:2px;">Product-led / Comunidade</div>
+              <div class="col-body">
+                <div class="col-item"><strong>Who · Clientes:</strong> Bianca (ICP).</div>
+                <div class="col-item"><strong>What · Oferta:</strong> Gymtime Go · pay-per-use, day-use, "Moeda da Saúde".</div>
+                <div class="col-item"><strong>How · Canal:</strong> app, gamificação e indicação · movimento product-led clássico, valor visível sem vendedor.</div>
+                <div class="col-item"><strong>Por que essa combinação:</strong> é o "moat" do ecossistema · quanto mais alunos ativos, maior o valor do marketplace para as academias, retroalimentando o movimento partner-led do B2B.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <div class="footer-src"><strong>Fontes:</strong> Canais de Aquisição por Público; framework de movimentos · Mentoria GTM Encontro 2, Ray Consulting (2026).</div>
+        <div class="footer-sig"><strong>Siglas:</strong> B2B = business to business · B2C = business to consumer · MPE = micro e pequena empresa.</div>
+      </div>
+    </div>
+
+    <!-- ===== 3.3 As Quatro Perguntas do GTM ===== -->
+    <div class="panel" id="b3-p3" data-group="b3">
+      <div class="panel-head">
+        <div class="panel-tag">Seção 3 · 3.3 Go-to-Market</div>
+        <div class="panel-title">As Quatro Perguntas do GTM</div>
+      </div>
+      <div class="block-parts">
+        <div class="part">
+          <p class="body-text lead">Framework aplicado ao ICP prioritário, Rodrigo · as quatro respostas já confirmadas, duas pelo diagnóstico e duas pela reunião de apresentação com o cliente.</p>
+          <div class="gap-grid cols2">
+            <div class="gap-card">
+              <h5>1ª · Quem é o cliente</h5>
+              <p>Rodrigo · dono de academia PME, 1-3 unidades, 200-800 alunos, Nordeste, gestão centralizada nele.</p>
+            </div>
+            <div class="gap-card teal-top">
+              <h5>2ª · Que problema resolve</h5>
+              <p>Inadimplência (15%-25% via boleto), churn involuntário (20%-35%) e ociosidade fora do pico não monetizada.</p>
+            </div>
+            <div class="gap-card">
+              <h5>3ª · Como aprende e decide comprar</h5>
+              <p>Confirmado pelo cliente: hoje não há equipe comercial para fazer busca ativa · a entrada acontece por indicação entre donos ou parceria (BB/Elgin/Polar), sempre conduzida pelos próprios founders.</p>
+              <div class="src-tag teal">Confirmado pelo cliente (set/2026)</div>
+            </div>
+            <div class="gap-card">
+              <h5>4ª · Quem inicia a conversa</h5>
+              <p>Confirmado pelo cliente: são os próprios founders que iniciam e conduzem a conversa comercial hoje, sem equipe comercial dedicada · a máquina de vendas está suspensa desde a perda do cliente principal.</p>
+              <div class="src-tag teal">Confirmado pelo cliente (set/2026)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <div class="footer-src"><strong>Fontes:</strong> Framework das 4 Perguntas de GTM (Christina Wallace/HBS); diagnóstico Gymtime (2026); reunião de apresentação com o cliente (set/2026).</div>
+        <div class="footer-sig"><strong>Siglas:</strong> ICP = perfil de cliente ideal · PME = pequena e média empresa.</div>
+      </div>
+    </div>
+
+    <!-- ===== 3.4 Framework por Nº de Clientes ===== -->
+    <div class="panel" id="b3-p4" data-group="b3">
+      <div class="panel-head">
+        <div class="panel-tag">Seção 3 · 3.4 Go-to-Market</div>
+        <div class="panel-title">Framework de Entrada por Número de Clientes</div>
+      </div>
+      <div class="block-parts">
+        <div class="part">
+          <div class="phase-track">
+            <div class="phase-card">
+              <div class="phase-num">1º</div>
+              <div class="phase-when">Cliente · Aprendizado</div>
+              <p><strong>Foco:</strong> confirmar que a dor de inadimplência e ociosidade leva a academia a pagar pelas três camadas.</p>
+              <div class="phase-strategy">Por quê: sem essa confirmação, investir em vendas é apostar numa hipótese ainda não testada.</div>
+            </div>
+            <div class="phase-card teal">
+              <div class="phase-num">2-10</div>
+              <div class="phase-when">Clientes · Repetibilidade</div>
+              <p><strong>Foco:</strong> validar um movimento repetível de venda (parceria + indicação), não um caso isolado.</p>
+              <div class="phase-strategy">Por quê: um cliente pode ser sorte; vários vendidos do mesmo jeito indicam um padrão. O GymPay, por ser sistema próprio e customizável, ajuda a repetir esse padrão sem depender de integrações externas.</div>
+            </div>
+            <div class="phase-card">
+              <div class="phase-num">11-100</div>
+              <div class="phase-when">Clientes · Processo</div>
+              <p><strong>Foco:</strong> transformar o movimento validado em processo, com métricas (CAC, ciclo, conversão) e a 1ª contratação comercial.</p>
+              <div class="phase-strategy">Por quê: sem processo documentado, o crescimento depende só dos founders.</div>
+            </div>
+            <div class="phase-card teal">
+              <div class="phase-num">100+</div>
+              <div class="phase-when">Clientes · Escala</div>
+              <p><strong>Foco:</strong> eficiência, expansão para o Sudeste e captura de ARPA nas três camadas.</p>
+              <div class="phase-strategy">Por quê: nesse volume, o jogo é de margem e operação, não mais de teste.</div>
+            </div>
+          </div>
+          <div class="note-box" style="margin-top:20px;max-width:none;">
+            <div class="ntitle">Achado · Onde a Gymtime Está</div>
+            <p>~116 academias na base atual, o que já ultrapassa a fase "100+" pelo critério de número de clientes. Mas CAC e conversão ainda não são medidos, e a estrutura comercial segue incipiente: o volume cresceu antes de a maturidade de processo acompanhar, e a Gymtime ainda não sabe por que ou como esses clientes chegaram até aqui. Esse quadro se agrava com a perda recente do cliente principal e a suspensão da máquina comercial: hoje não há processo ativo, apenas indicações levadas pelos sócios, o que exige reconstruir a repetibilidade antes de perseguir mais escala.</p>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <div class="footer-src"><strong>Fontes:</strong> Framework 1-10-100 (TURN8); diagnóstico Gymtime (2026); reunião de apresentação com o cliente (set/2026).</div>
+        <div class="footer-sig"><strong>Siglas:</strong> CAC = custo de aquisição · ARPA = receita média por conta.</div>
+      </div>
+    </div>
+
+    <!-- ===== 3.5 Framework de Entrada de Mercado ===== -->
+    <div class="panel" id="b3-p5" data-group="b3">
+      <div class="panel-head">
+        <div class="panel-tag">Seção 3 · 3.5 Go-to-Market</div>
+        <div class="panel-title">Framework de Entrada de Mercado</div>
+      </div>
+      <div class="block-parts">
+        <div class="part">
+          <div class="phase-track">
+            <div class="phase-card">
+              <div class="phase-num">Fase 1</div>
+              <div class="phase-when">0-6 meses · Consolidação e correção</div>
+              <p>Padronizar métricas (CAC único, separar ARR de TPV).</p>
+              <p>Ativar o GymPay na base atual (reduzir inadimplência).</p>
+              <p>Aprofundar o Nordeste (parcerias BB/Elgin/Polar).</p>
+            </div>
+            <div class="phase-card teal">
+              <div class="phase-num">Fase 2</div>
+              <div class="phase-when">6-18 meses · Expansão das camadas</div>
+              <p>Escalar SaaS + GymPay via parcerias de distribuição.</p>
+              <p>Ativar o Gymtime Go (day-use) e o efeito de rede B2C.</p>
+              <p>Iniciar entrada no Sudeste.</p>
+              <p>Elevar ARPA por cliente (de só-SaaS para stack completa).</p>
+              <p>Retomar a estruturação do time comercial e do funil B2B, agora com base e movimento de vendas já validados.</p>
+            </div>
+            <div class="phase-card">
+              <div class="phase-num">Fase 3</div>
+              <div class="phase-when">18-36 meses · Escala e captação</div>
+              <p>Preparar e rodar a pré-seed de 2026.</p>
+              <p>Expandir o marketplace e a base de alunos.</p>
+              <p>Provar unit economics por camada.</p>
+              <p>Abrir para redes e franquias (ICP aspiracional).</p>
+            </div>
+          </div>
+          <div class="banner">Recomendação: o programa deve focar na Fase 1 · fechar o movimento repetível e instrumentar CAC, ciclo e conversão · antes de comunicar publicamente as metas de Fase 2 e 3 no discurso de captação. A estruturação do time comercial e do funil B2B foi deslocada da Fase 1 para a Fase 2, de acordo com o cliente: hoje a máquina comercial está suspensa e a prioridade imediata é a recuperação do produto e da base, cabendo reconstruir a frente comercial apenas quando o movimento de vendas voltar a ser validado.</div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <div class="footer-src"><strong>Fontes:</strong> Roadmap Ray Consulting a partir do diagnóstico Gymtime (2026); ajuste validado com o cliente em reunião de apresentação (set/2026).</div>
+        <div class="footer-sig"><strong>Siglas:</strong> CAC = custo de aquisição · ARR = receita recorrente anual · TPV = volume transacionado · ARPA = receita média por conta.</div>
+      </div>
+    </div>
+
+    <!-- ===== 3.6 Cinco Testes de Prontidão Comercial ===== -->
+    <div class="panel" id="b3-p6" data-group="b3">
+      <div class="panel-head">
+        <div class="panel-tag">Seção 3 · 3.6 Go-to-Market</div>
+        <div class="panel-title">Os Cinco Testes de Prontidão Comercial</div>
+      </div>
+      <div class="block-parts">
+        <div class="part">
+          <p class="body-text lead">Os 5 C's alinham a ambição comercial da Gymtime à capacidade real de execução.</p>
+          <div class="check-row ok"><div class="check-ic">✔</div><div class="check-txt"><strong>1 · Customer</strong> — ICP priorizado e documentado · mas a objeção real desse comprador ("já tenho um sistema", medo de migração) foi inferida, não validada em conversa com o cliente.</div></div>
+          <div class="check-row warn"><div class="check-ic">⚠</div><div class="check-txt"><strong>2 · Coverage</strong> — canais mapeados e priorizados, mas "estrutura comercial ainda incipiente" · cobertura real fora dos ~116 clientes atuais não confirmada. A máquina comercial foi suspensa após a perda do cliente principal, reduzindo ainda mais a cobertura ativa hoje.</div></div>
+          <div class="check-row no"><div class="check-ic">✗</div><div class="check-txt"><strong>3 · Capacity · Pendente</strong> — sem dado de quantas pessoas vendem hoje; a liderança (CEO, CTO, Head Mobile) não inclui um perfil comercial dedicado. Não há hoje processo comercial ativo: as vendas que ocorrem são por indicação, conduzidas pelos próprios sócios.</div></div>
+          <div class="check-row warn"><div class="check-ic">⚠</div><div class="check-txt"><strong>4 · Capability</strong> — liderança técnica forte, sem perfil comercial dedicado identificado · mesma lacuna do diagnóstico inicial.</div></div>
+          <div class="check-row no"><div class="check-ic">✗</div><div class="check-txt"><strong>5 · Cost · Pendente</strong> — sem % de receita em custo comercial medido · referência de mercado B2B: 10%-40%.</div></div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <div class="footer-src"><strong>Fontes:</strong> Framework 5 C's · A Guide to Go-to-Market Strategy; diagnóstico Gymtime (2026); reunião de apresentação com o cliente (set/2026).</div>
+        <div class="footer-sig"><strong>Siglas:</strong> B2B = business to business.</div>
+      </div>
+    </div>
+
+    <!-- ===== 3.7 Autoavaliação Contra os Mitos de GTM ===== -->
+    <div class="panel" id="b3-p7" data-group="b3">
+      <div class="panel-head">
+        <div class="panel-tag">Seção 3 · 3.7 Go-to-Market</div>
+        <div class="panel-title">Autoavaliação Contra os Mitos de GTM</div>
+      </div>
+      <div class="block-parts">
+        <div class="part">
+          <div class="gap-grid">
+            <div class="gap-card teal-top">
+              <h5>✔ Onde Acerta</h5>
+              <p>A Gymtime não tratou GTM como algo pós-produto: as três camadas já estão em produção há ~2 anos, com tração real (10.543 usuários no Go, TPV de R$ 2,32 mi/mês) · não ficou travada esperando o produto "ficar perfeito".</p>
+            </div>
+            <div class="gap-card">
+              <h5>⚠ Ponto de Atenção</h5>
+              <p>O diferencial (gestão + pagamentos + marketplace) é hoje um espaço vazio no mercado, mas sustentar essa combinação operacionalmente é o risco: o modelo tri-produto atendendo 3 públicos é risco médio de dispersão, e o Pix Automático sem MDR pressiona a margem do GymPay exatamente na camada de entrada. Em set/2026, os founders confirmaram a perda recente de alguns clientes-chave, um sinal concreto de que esse risco de dispersão já está se materializando em churn, e não é mais só hipótese.</p>
+            </div>
+            <div class="gap-card highlight">
+              <h5>Recomendação</h5>
+              <p>Reforçar no discurso de captação a tração já validada (116 academias, TPV de R$ 2,32 mi/mês, ARR de ~R$ 293 mil), o GymPay como sistema financeiro proprietário e customizável (não revendido, ao contrário dos concorrentes de pagamento) e o posicionamento competitivo único como diferencial central, tratando a integração das três camadas como ativo a proteger operacionalmente, não só como discurso. Diante da perda recente de clientes e da falta de foco comercial confirmadas pelos founders, tratar a retenção da base atual como prioridade imediata, antes de qualquer esforço de expansão.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <div class="footer-src"><strong>Fontes:</strong> 5 falhas clássicas de GTM · TURN8; diagnóstico Gymtime (2026); reunião de apresentação com o cliente (set/2026).</div>
+        <div class="footer-sig"><strong>Siglas:</strong> MDR = taxa de desconto do lojista · ARR = receita recorrente anual.</div>
+      </div>
+    </div>
+
+    <!-- ===== 3.8 Jornada de Proposta de Valor ===== -->
+    <div class="panel" id="b3-p8" data-group="b3">
+      <div class="panel-head">
+        <div class="panel-tag">Seção 3 · 3.8 Go-to-Market</div>
+        <div class="panel-title">Mapa de Jornada de Proposta de Valor</div>
+      </div>
+      <div class="block-parts">
+        <div class="part">
+          <div class="profile-row">
+            <div class="profile-card">
+              <h5>Rodrigo</h5>
+              <p><strong>Dor central:</strong> fluxo de caixa apertado por inadimplência e ociosidade fora do pico.<br><strong>Canal principal:</strong> parcerias de distribuição (BB, Elgin, Polar) + indicação entre donos.<br><strong>Quem decide:</strong> decisão individual · dono da academia, gestão centralizada nele.<br><strong>Pitch central:</strong> "Organize a operação, receba melhor e monetize horários vazios · numa única plataforma."</p>
+            </div>
+            <div class="profile-card p">
+              <h5>Marina</h5>
+              <p><strong>Dor central:</strong> precisa diferenciar a experiência e abrir novos fluxos de receita.<br><strong>Canal principal:</strong> ecossistema, feiras do setor e conteúdo.<br><strong>Quem decide:</strong> decisão individual ou pequeno time à frente do estúdio/rede pequena.<br><strong>Pitch central:</strong> "Aumente a receita por aluno com day-use, aulas avulsas e uma experiência gamificada."</p>
+            </div>
+            <div class="profile-card">
+              <h5>Bianca</h5>
+              <p><strong>Dor central:</strong> não quer plano fixo; quer flexibilidade e recompensa por se cuidar.<br><strong>Canal principal:</strong> app, gamificação e indicação (Gymtime Go).<br><strong>Quem decide:</strong> decisão individual · consumidora final.<br><strong>Pitch central:</strong> "Treine onde e quando quiser, pague pelo uso e ganhe recompensas · a Moeda da Saúde."</p>
+            </div>
+          </div>
+          <div class="banner">A oferta entra pela dor de receita da academia; a demanda (Bianca) dá densidade ao marketplace e devolve valor para a academia · os dois lados se reforçam.</div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <div class="footer-src"><strong>Fontes:</strong> Jornadas construídas a partir dos ICPs definidos anteriormente (2026).</div>
+        <div class="footer-sig"><strong>Siglas:</strong> B2C = business to consumer · day-use = uso avulso.</div>
+      </div>
+    </div>
+
+    <!-- ===== 3.9 Funis de Vendas e Canais ===== -->
+    <div class="panel" id="b3-p9" data-group="b3">
+      <div class="panel-head">
+        <div class="panel-tag">Seção 3 · 3.9 Go-to-Market</div>
+        <div class="panel-title">Funis de Vendas e Canais Prioritários</div>
+      </div>
+      <div class="block-parts">
+        <div class="part">
+          <div class="funnel-track" style="grid-template-columns:repeat(2,1fr);">
+            <div class="funnel-card">
+              <h5>Funil B2B · Academias</h5>
+              <div class="step-row"><div class="step-num">1</div><div class="step-txt"><strong>Descoberta</strong> · via parcerias de distribuição e indicação.</div></div>
+              <div class="step-row"><div class="step-num">2</div><div class="step-txt"><strong>Qualificação</strong> · dor de inadimplência / ociosidade.</div></div>
+              <div class="step-row"><div class="step-num">3</div><div class="step-txt"><strong>Ativação SaaS + GymPay</strong> · entrada de baixo atrito, resolve o boleto.</div></div>
+              <div class="step-row"><div class="step-num">4</div><div class="step-txt"><strong>Expansão Go</strong> · ativa marketplace / day-use.</div></div>
+              <div class="step-row"><div class="step-num">5</div><div class="step-txt"><strong>Retenção por integração</strong> · alto custo de troca com as três camadas.</div></div>
+            </div>
+            <div class="funnel-card teal">
+              <h5>Funil B2C · Alunos</h5>
+              <div class="step-row"><div class="step-num">1</div><div class="step-txt"><strong>Consciência</strong> · app, gamificação e indicação.</div></div>
+              <div class="step-row"><div class="step-num">2</div><div class="step-txt"><strong>Conversão day-use</strong> · primeiro uso avulso, sem plano.</div></div>
+              <div class="step-row"><div class="step-num">3</div><div class="step-txt"><strong>Recorrência gamificada</strong> · Moeda da Saúde e recompensas.</div></div>
+              <div class="step-row"><div class="step-num">4</div><div class="step-txt"><strong>Efeito de rede</strong> · mais alunos elevam o valor para as academias.</div></div>
+            </div>
+          </div>
+          <div class="banner">Alocação sugerida (Fase 1): ~60% em parcerias de distribuição e indicação entre donos (canal crítico, menor CAC) · ~30% em ecossistema e feiras do setor · ~10% de exploração em tráfego pago e conteúdo, ainda não prioritário.</div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <div class="footer-src"><strong>Fontes:</strong> Funis a partir dos canais e ICPs já definidos · alocação é recomendação Ray Consulting (2026), não dado do cliente.</div>
+        <div class="footer-sig"><strong>Siglas:</strong> B2B = business to business · B2C = business to consumer · CAC = custo de aquisição.</div>
+      </div>
+    </div>
+
+    <!-- ===== 3.10 Matriz Produto × Mercado ===== -->
+    <div class="panel" id="b3-p10" data-group="b3">
+      <div class="panel-head">
+        <div class="panel-tag">Seção 3 · 3.10 Produto × Mercado</div>
+        <div class="panel-title">Matriz Produto × Mercado</div>
+      </div>
+      <div class="block-parts">
+        <div class="part">
+          <p class="body-text lead">Aderência de cada camada do ecossistema a cada perfil de cliente · quanto mais camadas ativas, maior o ARPA e o custo de troca.</p>
+          <div class="table-scroll">
+            <table class="data-table">
+              <thead><tr><th>Camada</th><th>Rodrigo · Academia PME</th><th>Marina · Estúdio boutique</th><th>Bianca · Aluno B2C</th><th>Rede · Franquia</th></tr></thead>
+              <tbody>
+                <tr><td><strong>SaaS · Gestão</strong></td><td>● Organiza a operação</td><td>● Gestão do estúdio</td><td>○ Não se aplica</td><td>● Multiunidade</td></tr>
+                <tr><td><strong>GymPay · Pagamentos</strong></td><td>● Reduz inadimplência</td><td>◐ Conforme adesão</td><td>○ Indireto (paga no app)</td><td>● Cobrança em escala</td></tr>
+                <tr class="hl"><td><strong>Gymtime Go · Marketplace</strong></td><td>◐ Monetiza ociosidade</td><td>● Day-use / experiência</td><td>● Pay-per-use / Moeda</td><td>◐ Benefício de rede</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="body-text" style="margin-top:14px;">Aderência: <strong>●</strong> Núcleo · <strong>◐</strong> Complementar · <strong>○</strong> Indireto / não se aplica.</p>
+          <div class="banner">Rodrigo e Rede ativam as três camadas · maior ARPA.</div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <div class="footer-src"><strong>Fontes:</strong> Análise Ray Consulting a partir do modelo de três camadas da Gymtime (2026).</div>
+        <div class="footer-sig"><strong>Siglas:</strong> ARPA = receita média por conta · B2C = business to consumer · day-use = uso avulso.</div>
+      </div>
+    </div>
+
+    <!-- ===== 3.11 Narrativa para Investidores ===== -->
+    <div class="panel" id="b3-p11" data-group="b3">
+      <div class="panel-head">
+        <div class="panel-tag">Seção 3 · 3.11 Preparação para Captação</div>
+        <div class="panel-title">Narrativa para Investidores</div>
+      </div>
+      <div class="block-parts">
+        <div class="part">
+          <p class="body-text lead">Pitch central: a Gymtime unifica gestão, pagamentos e consumo sob demanda no mercado de R$ 17 bi/ano das academias, entrando pela dor de receita e crescendo por camadas.</p>
+          <div class="gap-grid">
+            <div class="gap-card">
+              <h5>Problema</h5>
+              <p>Academias perdem receita por inadimplência, churn e ociosidade, com gestão pouco profissional e sistemas desconectados.</p>
+            </div>
+            <div class="gap-card teal-top">
+              <h5>Solução</h5>
+              <p>Ecossistema em três camadas · SaaS de gestão, GymPay (sistema financeiro próprio e customizável, não terceirizado) e Gymtime Go (marketplace de demanda).</p>
+            </div>
+            <div class="gap-card highlight">
+              <h5>Mercado (corrigido)</h5>
+              <p>TAM ~R$ 90 bi (provedores), SAM R$ 328–614 mi (Brasil), SOM R$ 212–397 mi (SE+NE) · base bottom-up defensável.</p>
+            </div>
+            <div class="gap-card">
+              <h5>Por que agora</h5>
+              <p>Boom pós-pandemia, Pix Automático e desbancarização das PMEs abrem a janela de gestão + pagamentos.</p>
+            </div>
+            <div class="gap-card teal-top">
+              <h5>Modelo</h5>
+              <p>Receita multicamada; crescimento de R$ 200 para R$ 800-1.500/mês por cliente conforme ativa camadas.</p>
+            </div>
+            <div class="gap-card">
+              <h5>Uso de recursos</h5>
+              <p>Rodada pré-anjo de R$ 500 mil (~R$ 5 mi de valuation) · revisar o split para reforçar time e tração, não só marketing.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <div class="footer-src"><strong>Fontes:</strong> Narrativa Ray Consulting a partir do diagnóstico completo (2026); reunião de apresentação com o cliente (set/2026).</div>
+        <div class="footer-sig"><strong>Siglas:</strong> TAM/SAM/SOM = mercado total/endereçável/obtível · PME = pequena e média empresa.</div>
+      </div>
+    </div>
+
+    <!-- ===== 3.12 Decisões a Tomar Agora ===== -->
+    <div class="panel" id="b3-p12" data-group="b3">
+      <div class="panel-head">
+        <div class="panel-tag">Seção 3 · 3.12 Go-to-Market</div>
+        <div class="panel-title">As Decisões que a Gymtime Precisa Tomar Agora</div>
+      </div>
+      <div class="block-parts">
+        <div class="part">
+          <div class="phase-track" style="grid-template-columns:repeat(2,1fr);">
+            <div class="phase-card">
+              <div class="phase-num">1ª</div>
+              <p>Como instrumentar CAC, ciclo e conversão na base atual de ~116 academias antes de comunicar metas de Fase 2 e 3 na captação, condição de saída da Fase 1.</p>
+            </div>
+            <div class="phase-card teal">
+              <div class="phase-num">2ª</div>
+              <p>Qual frase resume a proposta de valor de "gestão + pagamentos + marketplace" para um dono de academia que nunca ouviu falar das três camadas juntas.</p>
+            </div>
+            <div class="phase-card">
+              <div class="phase-num">3ª</div>
+              <p>Se o movimento prioritário dos próximos 6 meses é reforçar parcerias (B2B) ou acelerar o Gymtime Go (B2C) · os dois se retroalimentam, mas a capacidade comercial ainda é limitada.</p>
+            </div>
+            <div class="phase-card teal">
+              <div class="phase-num">4ª</div>
+              <p>Qual o primeiro marco de tração (academias ativas, TPV, ARPA) que justifica contratar a 1ª posição comercial dedicada · hoje a estrutura depende ainda mais dos sócios, após a suspensão da máquina comercial.</p>
+            </div>
+          </div>
+          <div class="note-box" style="margin-top:20px;max-width:none;">
+            <div class="ntitle">Fator Novo</div>
+            <p>Confirmado pelo cliente após o diagnóstico inicial: a perda do cliente principal e de clientes que o tinham como referência, a suspensão da máquina comercial e a ausência de processo comercial ativo (vendas hoje só por indicação, conduzidas pelos sócios) tornam as decisões 3ª e 4ª mais urgentes · e o GymPay, sistema de pagamentos proprietário da Gymtime, é o diferencial a proteger enquanto essa reestruturação acontece.</p>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <div class="footer-src"><strong>Fontes:</strong> Síntese Ray Consulting a partir dos achados do Bloco 3 (2026).</div>
+        <div class="footer-sig"><strong>Siglas:</strong> B2B = business to business · B2C = business to consumer · ARPA = receita média por conta · TPV = volume transacionado.</div>
+      </div>
+    </div>
+
+  </div>
+  </div>
+</section>
+</main>
+
+<footer class="site-footer">
+  <div class="fname">Ray Consulting × Porto Digital</div>
+  <div>Programa de Pré-Aceleração · Diagnóstico e estratégia de Go-to-Market para a Gymtime</div>
+  <div class="fbrand">
+    <div class="fname">Equipe Ray</div>
+    <a class="femail" href="https://rayconsulting.com.br/" target="_blank" rel="noopener">rayconsulting.com.br</a>
+  </div>
+</footer>
+
+<button class="print-fab" title="Exportar / Imprimir PDF" onclick="window.print()">⭳</button>
+
+<script>
+function showView(view){
+  document.querySelectorAll('.view').forEach(function(el){ el.classList.remove('active'); });
+  document.getElementById('view-'+view).classList.add('active');
+  document.querySelectorAll('#mainNav button').forEach(function(b){ b.classList.toggle('active', b.dataset.view===view); });
+  window.scrollTo({top:0, behavior:'smooth'});
+  setTimeout(updateScrollSpy, 50);
+}
+function goHome(){ showView('home'); }
+
+/* Os micro-tópicos (1.1, 1.2...) ficam todos na mesma página, em sequência,
+   com a navegação em uma barra lateral (desktop) ou barra horizontal fixa
+   (telas estreitas) — funciona como atalho: clicar rola suavemente até o
+   trecho, sem esconder o resto do conteúdo. */
+function getStickyOffset(group){
+  var header = document.querySelector('.app-header');
+  var h = header ? header.offsetHeight : 0;
+  if(window.innerWidth <= 900){
+    var sidebar = document.querySelector('#view-'+group+' .bloco-sidebar');
+    h += sidebar ? sidebar.offsetHeight : 0;
+  }
+  return h + 20;
+}
+function showPanel(group, panelId){
+  var target = document.getElementById(panelId);
+  if(!target) return;
+  var top = target.getBoundingClientRect().top + window.pageYOffset - getStickyOffset(group);
+  window.scrollTo({top: top, behavior:'smooth'});
+}
+
+/* Scrollspy: destaca na navegação o micro-tópico mais perto do topo
+   (logo abaixo do cabeçalho fixo) enquanto o usuário rola a página. */
+function updateScrollSpy(){
+  var activeView = document.querySelector('.view.active');
+  if(!activeView) return;
+  var group = activeView.id.replace('view-','');
+  var subnavInner = document.querySelector('.sub-nav-inner[data-group="'+group+'"]');
+  if(!subnavInner) return;
+  var line = getStickyOffset(group);
+  var panels = activeView.querySelectorAll('.panel');
+  var currentId = panels.length ? panels[0].id : null;
+  panels.forEach(function(p){
+    if(p.getBoundingClientRect().top - line <= 1){ currentId = p.id; }
+  });
+  if(!currentId) return;
+  subnavInner.querySelectorAll('button').forEach(function(b){
+    b.classList.toggle('active', b.getAttribute('onclick').indexOf("'"+currentId+"'")>-1);
+  });
+}
+
+/* Cabeçalho compacto ao rolar: reduz a altura do header fixo para sobrar
+   mais espaço de tela pro conteúdo, e mantém a variável --header-h (usada
+   pelo offset de rolagem e pela barra lateral sticky) sempre atualizada. */
+function updateHeaderState(){
+  var header = document.querySelector('.app-header');
+  if(!header) return;
+  header.classList.toggle('compact', window.scrollY > 16);
+  document.documentElement.style.setProperty('--header-h', header.offsetHeight+'px');
+}
+(function(){
+  var ticking = false;
+  function onScroll(){
+    if(!ticking){
+      window.requestAnimationFrame(function(){ updateHeaderState(); updateScrollSpy(); ticking = false; });
+      ticking = true;
+    }
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  window.addEventListener('resize', function(){ updateHeaderState(); updateScrollSpy(); });
+  updateHeaderState();
+  updateScrollSpy();
+})();
+</script>
+<!-- ============================================================
+     CAMADA INTERATIVA — não precisa de nenhuma marcação extra no
+     conteúdo. Ela lê o HTML que você escreveu e liga sozinha:
+     revelação ao rolar, animação das barras, rodapés de fontes
+     colapsáveis, glossário de siglas em tooltip e progresso de
+     leitura. Não remova e não duplique estes blocos.
+     ============================================================ -->
+<script>
+
+/* ============================================================
+   CAMADA INTERATIVA v2 — data room
+   1. Revelação suave de conteúdo ao entrar em tela
+   2. Gráficos que animam quando o leitor chega neles
+   3. Rodapés de fontes/siglas colapsáveis
+   4. Glossário de siglas auto-extraído -> tooltips
+   5. Barra de progresso de leitura + estado "lido" na lateral
+   ============================================================ */
+
+/* ---------- 1 + 2. Revelação e animação de gráficos ---------- */
+(function(){
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* guarda o valor-alvo de cada barra e zera a largura para animar depois */
+  document.querySelectorAll('.bar-fill, .range-fill').forEach(function(el){
+    var w = el.style.width;
+    if(!w) return;
+    el.dataset.target = w;
+    if(!reduce) el.style.width = '0%';
+  });
+
+  function fillBars(scope){
+    scope.querySelectorAll('.bar-fill[data-target], .range-fill[data-target]').forEach(function(el, i){
+      if(el.dataset.filled) return;
+      el.dataset.filled = '1';
+      var t = el.dataset.target;
+      if(reduce){ el.style.width = t; return; }
+      setTimeout(function(){ el.style.width = t; }, 60 + i*55);
+    });
+  }
+
+  /* alvos de revelação: pedaços de conteúdo, não elementos isolados */
+  var targets = document.querySelectorAll('.panel-head, .block-parts > .part, .sub-block-divider, .hero, .stats-band, .home-summary, .bloco-chapter-inner');
+  if(!reduce) targets.forEach(function(el){ el.classList.add('reveal'); });
+
+  if(!('IntersectionObserver' in window)){
+    targets.forEach(function(el){ el.classList.add('in'); fillBars(el); });
+    return;
+  }
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(!e.isIntersecting) return;
+      e.target.classList.add('in');
+      fillBars(e.target);
+      io.unobserve(e.target);
+    });
+  }, {rootMargin:'0px 0px -8% 0px', threshold:0.06});
+  targets.forEach(function(el){ io.observe(el); });
+
+  /* ao trocar de bloco, o conteúdo já visível precisa aparecer na hora */
+  window.revealVisible = function(){
+    document.querySelectorAll('.view.active .reveal:not(.in)').forEach(function(el){
+      var r = el.getBoundingClientRect();
+      if(r.top < window.innerHeight * 0.95){ el.classList.add('in'); fillBars(el); }
+    });
+  };
+})();
+
+/* ---------- 3. Rodapés de fontes/siglas colapsáveis ---------- */
+(function(){
+  document.querySelectorAll('.slide-footer').forEach(function(f){
+    if(f.querySelector('.sf-toggle')) return;
+    var body = document.createElement('div');
+    body.className = 'sf-body';
+    while(f.firstChild){ body.appendChild(f.firstChild); }
+    var btn = document.createElement('button');
+    btn.className = 'sf-toggle';
+    btn.type = 'button';
+    btn.innerHTML = '<span class="chev">▶</span><span>Fontes e siglas</span>';
+    btn.addEventListener('click', function(){ f.classList.toggle('open'); });
+    f.appendChild(btn);
+    f.appendChild(body);
+  });
+})();
+
+/* ---------- 4. Glossário de siglas -> tooltips ----------
+   As definições não são digitadas duas vezes: são lidas dos próprios
+   blocos "Siglas:" do relatório. Se o conteúdo muda, o glossário
+   acompanha sozinho. */
+(function(){
+  var glossary = {};
+  document.querySelectorAll('.footer-sig').forEach(function(sig){
+    var txt = sig.textContent.replace(/^\s*Siglas:\s*/i,'');
+    txt.split('·').forEach(function(part){
+      var m = part.split('=');
+      if(m.length < 2) return;
+      var key = m[0].trim();
+      var def = m.slice(1).join('=').trim().replace(/\.$/,'');
+      if(!key || !def) return;
+      key.split('/').forEach(function(k){
+        k = k.trim();
+        if(k.length < 2 || k.length > 14) return;
+        if(!/^[A-ZÀ-Ú][A-ZÀ-Ú0-9&.-]+$/.test(k)) return;
+        if(!glossary[k]) glossary[k] = def;
+      });
+    });
+  });
+  var terms = Object.keys(glossary).sort(function(a,b){ return b.length - a.length; });
+  if(!terms.length) return;
+
+  var re = new RegExp('\\b(' + terms.map(function(t){
+    return t.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+  }).join('|') + ')\\b', 'g');
+
+  var SKIP = /^(BUTTON|TH|SCRIPT|STYLE|ABBR|H2|H3|H4|H5)$/;
+  /* títulos, rótulos e tags nunca recebem tooltip: sublinhado em título vira ruído */
+  var NO_TIP = ['footer-sig','footer-src','sigla','panel-tag','chapter-tag','panel-title',
+                'chapter-title','part-title','col-title','barchart-title','stitle','ntitle',
+                'qcite','snum','kpi-num','phase-when','section-label','mlabel','hero-title',
+                'hero-eyebrow','home-summary-tag','src-tag','risk-badge','bl-top','matrix-xaxis',
+                'matrix-yaxis','report-tag','brand-names'];
+  var count = {};
+  /* a home fica limpa de propósito: o glossário serve à leitura dos blocos */
+  document.querySelectorAll('.content-wrap').forEach(function(scope){
+    var walker = document.createTreeWalker(scope, NodeFilter.SHOW_TEXT, {
+      acceptNode: function(n){
+        if(!n.nodeValue || n.nodeValue.length < 2) return NodeFilter.FILTER_REJECT;
+        var p = n.parentNode;
+        while(p && p !== scope){
+          if(SKIP.test(p.nodeName)) return NodeFilter.FILTER_REJECT;
+          if(p.classList && NO_TIP.some(function(c){ return p.classList.contains(c); })) return NodeFilter.FILTER_REJECT;
+          p = p.parentNode;
+        }
+        return NodeFilter.FILTER_ACCEPT;
+      }
+    });
+    var nodes = [], n;
+    while((n = walker.nextNode())) nodes.push(n);
+
+    nodes.forEach(function(node){
+      var text = node.nodeValue;
+      if(!re.test(text)){ re.lastIndex = 0; return; }
+      re.lastIndex = 0;
+      var frag = document.createDocumentFragment(), last = 0, m;
+      while((m = re.exec(text))){
+        var term = m[1];
+        count[term] = (count[term] || 0);
+        /* uma marcação por sigla em cada bloco: o suficiente para ensinar o termo */
+        if(count[term] >= 1) continue;
+        count[term]++;
+        if(m.index > last) frag.appendChild(document.createTextNode(text.slice(last, m.index)));
+        var span = document.createElement('span');
+        span.className = 'sigla';
+        span.setAttribute('data-def', glossary[term]);
+        span.setAttribute('data-term', term);
+        span.textContent = term;
+        frag.appendChild(span);
+        last = m.index + term.length;
+      }
+      if(!frag.childNodes.length) return;
+      if(last < text.length) frag.appendChild(document.createTextNode(text.slice(last)));
+      node.parentNode.replaceChild(frag, node);
+    });
+    count = {};
+  });
+
+  /* tooltip único, posicionado no ponteiro */
+  var tip = document.createElement('div');
+  tip.className = 'sigla-tip';
+  document.body.appendChild(tip);
+  function place(e){
+    var pad = 14, w = tip.offsetWidth, h = tip.offsetHeight;
+    var x = e.clientX + pad, y = e.clientY + pad;
+    if(x + w > window.innerWidth - 8) x = e.clientX - w - pad;
+    if(y + h > window.innerHeight - 8) y = e.clientY - h - pad;
+    tip.style.left = Math.max(8, x) + 'px';
+    tip.style.top  = Math.max(8, y) + 'px';
+  }
+  document.addEventListener('mouseover', function(e){
+    var t = e.target.closest && e.target.closest('.sigla');
+    if(!t) return;
+    tip.innerHTML = '<b>' + t.getAttribute('data-term') + '</b>' + t.getAttribute('data-def');
+    tip.classList.add('on'); place(e);
+  });
+  document.addEventListener('mousemove', function(e){
+    if(tip.classList.contains('on') && e.target.closest && e.target.closest('.sigla')) place(e);
+  });
+  document.addEventListener('mouseout', function(e){
+    if(e.target.closest && e.target.closest('.sigla')) tip.classList.remove('on');
+  });
+})();
+
+/* ---------- 5. Progresso de leitura + estado "lido" na lateral ---------- */
+function updateReadingProgress(){
+  var view = document.querySelector('.view.active');
+  if(!view) return;
+  var header = document.querySelector('.app-header');
+  var hh = header ? header.offsetHeight : 0;
+  var top = view.offsetTop, h = view.offsetHeight;
+  var pos = window.scrollY + hh - top;
+  var span = Math.max(1, h - (window.innerHeight - hh));
+  var pct = Math.min(100, Math.max(0, (pos / span) * 100));
+  document.documentElement.style.setProperty('--read', pct.toFixed(2) + '%');
+
+  var group = view.id.replace('view-','');
+  var inner = document.querySelector('.sub-nav-inner[data-group="'+group+'"]');
+  if(!inner) return;
+  var line = hh + 20, passed = true;
+  var btns = inner.querySelectorAll('button');
+  view.querySelectorAll('.panel').forEach(function(p, i){
+    var done = p.getBoundingClientRect().bottom - line < 0;
+    if(btns[i]) btns[i].classList.toggle('done', done);
+  });
+  return passed;
+}
+
+/* ---------- Ligação com o shell existente ---------- */
+(function(){
+  var ticking = false;
+  function onScroll(){
+    if(!ticking){
+      window.requestAnimationFrame(function(){ updateReadingProgress(); ticking = false; });
+      ticking = true;
+    }
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  window.addEventListener('resize', updateReadingProgress);
+
+  /* showView original continua responsável pela troca de bloco; aqui só
+     garantimos que o conteúdo já visível apareça e o progresso reinicie. */
+  var _showView = window.showView;
+  if(typeof _showView === 'function'){
+    window.showView = function(v){
+      _showView(v);
+      setTimeout(function(){
+        if(window.revealVisible) window.revealVisible();
+        updateReadingProgress();
+      }, 60);
+    };
+  }
+  if(window.revealVisible) window.revealVisible();
+  updateReadingProgress();
+})();
+
+</script>
+</body>
+</html>
